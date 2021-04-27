@@ -37,54 +37,54 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 */
 void Test_9AX(void)
 {
-  char txt[30];
-  short aacx, aacy, aacz;    //加速度传感器原始数据
-  short gyrox, gyroy, gyroz; //陀螺仪原始数据
-  short magx, magy, magz;    //地磁计原始数据
+    char txt[30];
+    short aacx, aacy, aacz;    //加速度传感器原始数据
+    short gyrox, gyroy, gyroz; //陀螺仪原始数据
+    short magx, magy, magz;    //地磁计原始数据
 
-  OLED_Init(); //LCD初始化
-  OLED_CLS();  //LCD清屏
+    OLED_Init(); //LCD初始化
+    OLED_CLS();  //LCD清屏
 
-  IIC_Init();
+    IIC_Init();
 
-  OLED_P8x16Str(15, 0, "LQ 9AX Test");
+    OLED_P8x16Str(15, 0, "LQ 9AX Test");
 
-  if (LQ9AX_Init())
-  {
+    if (LQ9AX_Init())
+    {
 
-    OLED_P8x16Str(0, 2, "9AX Test Fail");
+        OLED_P8x16Str(0, 2, "9AX Test Fail");
+
+        while (1)
+            ;
+    }
 
     while (1)
-      ;
-  }
+    {
+        FX_8700_GetACCRaw(&aacx, &aacy, &aacz); //得到加速度传感器数据
+        FX_8700_GetMAGRaw(&magx, &magy, &magz);
+        FX_21002_GetRaw(&gyrox, &gyroy, &gyroz);
 
-  while (1)
-  {
-    FX_8700_GetACCRaw(&aacx, &aacy, &aacz); //得到加速度传感器数据
-    FX_8700_GetMAGRaw(&magx, &magy, &magz);
-    FX_21002_GetRaw(&gyrox, &gyroy, &gyroz);
+        sprintf((char *)txt, "ax:%06d", aacx);
+        OLED_P6x8Str(0, 2, txt);
+        sprintf((char *)txt, "ay:%06d", aacy);
+        OLED_P6x8Str(0, 3, txt);
+        sprintf((char *)txt, "az:%06d", aacz);
+        OLED_P6x8Str(0, 4, txt);
+        sprintf((char *)txt, "gx:%06d", gyrox);
+        OLED_P6x8Str(0, 5, txt);
+        sprintf((char *)txt, "gy:%06d", gyroy);
+        OLED_P6x8Str(0, 6, txt);
+        sprintf((char *)txt, "gz:%06d", gyroz);
+        OLED_P6x8Str(0, 7, txt);
+        sprintf((char *)txt, "MX:%5d ", magx);
+        OLED_P6x8Str(60, 5, txt);
+        sprintf((char *)txt, "MY:%5d ", magy);
+        OLED_P6x8Str(60, 6, txt);
+        sprintf((char *)txt, "MZ:%5d ", magz);
+        OLED_P6x8Str(60, 7, txt);
 
-    sprintf((char *)txt, "ax:%06d", aacx);
-    OLED_P6x8Str(0, 2, txt);
-    sprintf((char *)txt, "ay:%06d", aacy);
-    OLED_P6x8Str(0, 3, txt);
-    sprintf((char *)txt, "az:%06d", aacz);
-    OLED_P6x8Str(0, 4, txt);
-    sprintf((char *)txt, "gx:%06d", gyrox);
-    OLED_P6x8Str(0, 5, txt);
-    sprintf((char *)txt, "gy:%06d", gyroy);
-    OLED_P6x8Str(0, 6, txt);
-    sprintf((char *)txt, "gz:%06d", gyroz);
-    OLED_P6x8Str(0, 7, txt);
-    sprintf((char *)txt, "MX:%5d ", magx);
-    OLED_P6x8Str(60, 5, txt);
-    sprintf((char *)txt, "MY:%5d ", magy);
-    OLED_P6x8Str(60, 6, txt);
-    sprintf((char *)txt, "MZ:%5d ", magz);
-    OLED_P6x8Str(60, 7, txt);
-
-    delayms(100);
-  }
+        delayms(100);
+    }
 }
 
 /*!
@@ -102,32 +102,32 @@ void Test_9AX(void)
 */
 unsigned char LQ9AX_Init(void)
 {
-  FX_8700_Active(0);
-  delayms(10);
+    FX_8700_Active(0);
+    delayms(10);
 
-  if (FX_8700_Check())
-  {
-    //        PRINTF("\n FX_8700 Init Fail \n");
-    return 1;
-  }
-  FX_8700_SetRate(800, 2); // 800Hz  地磁和加速度计都使能
-  FX_8700_SetRange(4);     //± 4g
-  FX_8700_Active(1);
+    if (FX_8700_Check())
+    {
+        //        PRINTF("\n FX_8700 Init Fail \n");
+        return 1;
+    }
+    FX_8700_SetRate(800, 2); // 800Hz  地磁和加速度计都使能
+    FX_8700_SetRange(4);     //± 4g
+    FX_8700_Active(1);
 
-  FX_21002_Active(0);
-  delayms(10);
+    FX_21002_Active(0);
+    delayms(10);
 
-  if (FX_21002_Check())
-  {
-    //        PRINTF("\n FX_2100 Init Fail \n");
-    return 2;
-  }
-  FX_21002_SetRate(800);   // 800Hz  角速度计
-  FX_21002_SetRange(2000); //± 2000dps
-  FX_21002_SetLP(2);       //低通滤波
-  FX_21002_Active(1);
-  delayms(10);
-  return 0;
+    if (FX_21002_Check())
+    {
+        //        PRINTF("\n FX_2100 Init Fail \n");
+        return 2;
+    }
+    FX_21002_SetRate(800);   // 800Hz  角速度计
+    FX_21002_SetRange(2000); //± 2000dps
+    FX_21002_SetLP(2);       //低通滤波
+    FX_21002_Active(1);
+    delayms(10);
+    return 0;
 }
 
 /*!
@@ -145,20 +145,20 @@ unsigned char LQ9AX_Init(void)
 */
 unsigned char FX_8700_Active(unsigned char enable)
 {
-  unsigned char reg;
-  /* 开启高分辨率模式 */
-  FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG2, 0x02);
+    unsigned char reg;
+    /* 开启高分辨率模式 */
+    FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG2, 0x02);
 
-  reg = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1);
-  if (enable)
-  {
-    reg = reg | FXOS8701CQ_CTRL_REG1_ACTIVE;
-  }
-  else
-  {
-    reg = reg & ~FXOS8701CQ_CTRL_REG1_ACTIVE;
-  }
-  return FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1, reg);
+    reg = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1);
+    if (enable)
+    {
+        reg = reg | FXOS8701CQ_CTRL_REG1_ACTIVE;
+    }
+    else
+    {
+        reg = reg & ~FXOS8701CQ_CTRL_REG1_ACTIVE;
+    }
+    return FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1, reg);
 }
 
 /*!
@@ -177,15 +177,15 @@ unsigned char FX_8700_Active(unsigned char enable)
 */
 unsigned char FX_8700_GetACCRaw(short *ax, short *ay, short *az)
 {
-  unsigned char buf[6], res;
-  res = FX_Read_Len(FXOS8700_ADDR, FXOS8701CQ_OUT_X_MSB, 6, buf);
-  if (res == 0)
-  {
-    *ax = -((signed short)buf[0] << 8) | buf[1];
-    *ay = -((signed short)buf[2] << 8) | buf[3];
-    *az = ((signed short)buf[4] << 8) | buf[5];
-  }
-  return res;
+    unsigned char buf[6], res;
+    res = FX_Read_Len(FXOS8700_ADDR, FXOS8701CQ_OUT_X_MSB, 6, buf);
+    if (res == 0)
+    {
+        *ax = -((signed short)buf[0] << 8) | buf[1];
+        *ay = -((signed short)buf[2] << 8) | buf[3];
+        *az = ((signed short)buf[4] << 8) | buf[5];
+    }
+    return res;
 }
 
 /*!
@@ -204,15 +204,15 @@ unsigned char FX_8700_GetACCRaw(short *ax, short *ay, short *az)
 */
 unsigned char FX_8700_GetMAGRaw(short *mx, short *my, short *mz)
 {
-  unsigned char buf[6], res;
-  res = FX_Read_Len(FXOS8700_ADDR, FXOS8701CQ_M_OUT_X_MSB, 6, buf);
-  if (res == 0)
-  {
-    *mx = -((signed short)buf[0] << 8) | buf[1];
-    *my = -((signed short)buf[2] << 8) | buf[3];
-    *mz = ((signed short)buf[4] << 8) | buf[5];
-  }
-  return res;
+    unsigned char buf[6], res;
+    res = FX_Read_Len(FXOS8700_ADDR, FXOS8701CQ_M_OUT_X_MSB, 6, buf);
+    if (res == 0)
+    {
+        *mx = -((signed short)buf[0] << 8) | buf[1];
+        *my = -((signed short)buf[2] << 8) | buf[3];
+        *mz = ((signed short)buf[4] << 8) | buf[5];
+    }
+    return res;
 }
 
 /*!
@@ -230,22 +230,22 @@ unsigned char FX_8700_GetMAGRaw(short *mx, short *my, short *mz)
 */
 unsigned char FX_8700_SetRange(unsigned char mg)
 {
-  unsigned char reg = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_XYZ_DATA_CFG);
-  reg = reg & ~XYZ_DATA_CFG_FS_MASK;
-  if (mg <= 2)
-  {
-    reg |= XYZ_DATA_CFG_FS_2G;
-  }
-  else if (mg <= 4)
-  {
-    reg |= XYZ_DATA_CFG_FS_4G;
-  }
-  else
-  {
-    reg |= XYZ_DATA_CFG_FS_8G;
-  }
+    unsigned char reg = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_XYZ_DATA_CFG);
+    reg = reg & ~XYZ_DATA_CFG_FS_MASK;
+    if (mg <= 2)
+    {
+        reg |= XYZ_DATA_CFG_FS_2G;
+    }
+    else if (mg <= 4)
+    {
+        reg |= XYZ_DATA_CFG_FS_4G;
+    }
+    else
+    {
+        reg |= XYZ_DATA_CFG_FS_8G;
+    }
 
-  return FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_XYZ_DATA_CFG, reg);
+    return FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_XYZ_DATA_CFG, reg);
 }
 
 /*!
@@ -264,53 +264,53 @@ unsigned char FX_8700_SetRange(unsigned char mg)
 */
 unsigned char FX_8700_SetRate(signed short fps, unsigned char mode)
 {
-  unsigned char reg;
+    unsigned char reg;
 
-  if (mode == 0)
-  {
-    FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_M_CTRL_REG1, 0x00);
-  }
-  else if (mode == 1)
-  {
-    FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_M_CTRL_REG1, 0x01);
-  }
-  else
-  {
-    FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_M_CTRL_REG1, 0x40 | 0x1C | 0x03);
-  }
-  reg = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1);
-  reg &= ~CTRL_REG_DR_MASK;
+    if (mode == 0)
+    {
+        FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_M_CTRL_REG1, 0x00);
+    }
+    else if (mode == 1)
+    {
+        FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_M_CTRL_REG1, 0x01);
+    }
+    else
+    {
+        FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_M_CTRL_REG1, 0x40 | 0x1C | 0x03);
+    }
+    reg = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1);
+    reg &= ~CTRL_REG_DR_MASK;
 
-  if (fps <= 6)
-  {
-    reg |= CTRL_REG1_DR(6);
-  }
-  else if (fps <= 12)
-  {
-    reg |= CTRL_REG1_DR(5);
-  }
-  else if (fps <= 50)
-  {
-    reg |= CTRL_REG1_DR(4);
-  }
-  else if (fps <= 100)
-  {
-    reg |= CTRL_REG1_DR(3);
-  }
-  else if (fps <= 200)
-  {
-    reg |= CTRL_REG1_DR(2);
-  }
-  else if (fps <= 400)
-  {
-    reg |= CTRL_REG1_DR(1);
-  }
-  else
-  {
-    reg |= CTRL_REG1_DR(0);
-  }
-  reg &= ~0x02;
-  return FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1, reg);
+    if (fps <= 6)
+    {
+        reg |= CTRL_REG1_DR(6);
+    }
+    else if (fps <= 12)
+    {
+        reg |= CTRL_REG1_DR(5);
+    }
+    else if (fps <= 50)
+    {
+        reg |= CTRL_REG1_DR(4);
+    }
+    else if (fps <= 100)
+    {
+        reg |= CTRL_REG1_DR(3);
+    }
+    else if (fps <= 200)
+    {
+        reg |= CTRL_REG1_DR(2);
+    }
+    else if (fps <= 400)
+    {
+        reg |= CTRL_REG1_DR(1);
+    }
+    else
+    {
+        reg |= CTRL_REG1_DR(0);
+    }
+    reg &= ~0x02;
+    return FX_Write_Byte(FXOS8700_ADDR, FXOS8701CQ_CTRL_REG1, reg);
 }
 
 /*!
@@ -328,19 +328,19 @@ unsigned char FX_8700_SetRate(signed short fps, unsigned char mode)
 */
 unsigned char FX_8700_Check(void)
 {
-  unsigned char ID = 0;
+    unsigned char ID = 0;
 
-  ID = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_WHOAMI);
-  if (FXOS8700CQ_WHOAMI_VAL == ID || FXOS8701CQ_WHOAMI_VAL == ID)
-  {
-    //        PRINTF("\n FXOS8700 is OK\n");
-    return 0;
-  }
-  else
-  {
-    //        PRINTF("\n FXOS8700 is Failed\n\rCheck ID = %x \n" , ID);
-  }
-  return 1;
+    ID = FX_Read_Byte(FXOS8700_ADDR, FXOS8701CQ_WHOAMI);
+    if (FXOS8700CQ_WHOAMI_VAL == ID || FXOS8701CQ_WHOAMI_VAL == ID)
+    {
+        //        PRINTF("\n FXOS8700 is OK\n");
+        return 0;
+    }
+    else
+    {
+        //        PRINTF("\n FXOS8700 is Failed\n\rCheck ID = %x \n" , ID);
+    }
+    return 1;
 }
 
 /*--------------------------------------------------------------------------------------
@@ -363,15 +363,15 @@ unsigned char FX_8700_Check(void)
 */
 unsigned char FX_21002_GetRaw(short *gyrox, short *gyroy, short *gyroz)
 {
-  unsigned char buf[6], res;
-  res = FX_Read_Len(FXAS21002C_ADDR, FXAS21002C_OUT_X_MSB, 6, buf);
-  if (res == 0)
-  {
-    *gyrox = ((signed short)buf[0] << 8) | buf[1];
-    *gyroy = ((signed short)buf[2] << 8) | buf[3];
-    *gyroz = ((signed short)buf[4] << 8) | buf[5];
-  }
-  return res;
+    unsigned char buf[6], res;
+    res = FX_Read_Len(FXAS21002C_ADDR, FXAS21002C_OUT_X_MSB, 6, buf);
+    if (res == 0)
+    {
+        *gyrox = ((signed short)buf[0] << 8) | buf[1];
+        *gyroy = ((signed short)buf[2] << 8) | buf[3];
+        *gyroz = ((signed short)buf[4] << 8) | buf[5];
+    }
+    return res;
 }
 
 /*!
@@ -389,16 +389,16 @@ unsigned char FX_21002_GetRaw(short *gyrox, short *gyroy, short *gyroz)
 */
 unsigned char FX_21002_Active(unsigned char enable)
 {
-  unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1);
-  if (enable)
-  {
-    reg = reg | CTRL_REG1_ACTIVE;
-  }
-  else
-  {
-    reg = reg & ~CTRL_REG1_READY;
-  }
-  return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1, reg);
+    unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1);
+    if (enable)
+    {
+        reg = reg | CTRL_REG1_ACTIVE;
+    }
+    else
+    {
+        reg = reg & ~CTRL_REG1_READY;
+    }
+    return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1, reg);
 }
 
 /*!
@@ -422,10 +422,10 @@ unsigned char FX_21002_Active(unsigned char enable)
 */
 unsigned char FX_21002_SetHP(unsigned char mode)
 {
-  unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0);
-  reg = reg | CTRL_REG0_HPF_EN;
-  reg |= (mode << CTRL_REG0_SEL_SHIFTS);
-  return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0, reg);
+    unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0);
+    reg = reg | CTRL_REG0_HPF_EN;
+    reg |= (mode << CTRL_REG0_SEL_SHIFTS);
+    return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0, reg);
 }
 
 /*!
@@ -447,10 +447,10 @@ unsigned char FX_21002_SetHP(unsigned char mode)
 */
 unsigned char FX_21002_SetLP(unsigned char mode)
 {
-  unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0);
-  reg = reg & ~CTRL_REG0_BW_MASK;
-  reg |= (mode << CTRL_REG0_BW_SHIFTS);
-  return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0, reg);
+    unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0);
+    reg = reg & ~CTRL_REG0_BW_MASK;
+    reg |= (mode << CTRL_REG0_BW_SHIFTS);
+    return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0, reg);
 }
 
 /*!
@@ -468,26 +468,26 @@ unsigned char FX_21002_SetLP(unsigned char mode)
 */
 unsigned char FX_21002_SetRange(unsigned short dps)
 {
-  unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0);
-  reg = reg & ~CTRL_REG0_FS_MASK;
-  if (dps <= 250)
-  {
-    reg |= CTRL_REG0_FS_250_DPS;
-  }
-  else if (dps <= 500)
-  {
-    reg |= CTRL_REG0_FS_500_DPS;
-  }
-  else if (dps <= 1000)
-  {
-    reg |= CTRL_REG0_FS_1000_DPS;
-  }
-  else
-  {
-    reg |= CTRL_REG0_FS_2000_DPS;
-  }
+    unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0);
+    reg = reg & ~CTRL_REG0_FS_MASK;
+    if (dps <= 250)
+    {
+        reg |= CTRL_REG0_FS_250_DPS;
+    }
+    else if (dps <= 500)
+    {
+        reg |= CTRL_REG0_FS_500_DPS;
+    }
+    else if (dps <= 1000)
+    {
+        reg |= CTRL_REG0_FS_1000_DPS;
+    }
+    else
+    {
+        reg |= CTRL_REG0_FS_2000_DPS;
+    }
 
-  return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0, reg);
+    return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG0, reg);
 }
 
 /*!
@@ -505,38 +505,38 @@ unsigned char FX_21002_SetRange(unsigned short dps)
 */
 unsigned char FX_21002_SetRate(unsigned short fps)
 {
-  unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1);
-  reg &= ~CTRL_REG_DR_MASK;
+    unsigned char reg = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1);
+    reg &= ~CTRL_REG_DR_MASK;
 
-  if (fps <= 13)
-  {
-    reg |= CTRL_REG_DR_12_5;
-  }
-  else if (fps <= 25)
-  {
-    reg |= CTRL_REG_DR_25HZ;
-  }
-  else if (fps <= 50)
-  {
-    reg |= CTRL_REG_DR_50HZ;
-  }
-  else if (fps <= 100)
-  {
-    reg |= CTRL_REG_DR_100HZ;
-  }
-  else if (fps <= 200)
-  {
-    reg |= CTRL_REG_DR_200HZ;
-  }
-  else if (fps <= 400)
-  {
-    reg |= CTRL_REG_DR_400HZ;
-  }
-  else
-  {
-    reg |= CTRL_REG_DR_800HZ;
-  }
-  return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1, reg);
+    if (fps <= 13)
+    {
+        reg |= CTRL_REG_DR_12_5;
+    }
+    else if (fps <= 25)
+    {
+        reg |= CTRL_REG_DR_25HZ;
+    }
+    else if (fps <= 50)
+    {
+        reg |= CTRL_REG_DR_50HZ;
+    }
+    else if (fps <= 100)
+    {
+        reg |= CTRL_REG_DR_100HZ;
+    }
+    else if (fps <= 200)
+    {
+        reg |= CTRL_REG_DR_200HZ;
+    }
+    else if (fps <= 400)
+    {
+        reg |= CTRL_REG_DR_400HZ;
+    }
+    else
+    {
+        reg |= CTRL_REG_DR_800HZ;
+    }
+    return FX_Write_Byte(FXAS21002C_ADDR, FXAS21002C_CTRL_REG1, reg);
 }
 
 /*!
@@ -554,19 +554,19 @@ unsigned char FX_21002_SetRate(unsigned short fps)
 */
 unsigned char FX_21002_Check(void)
 {
-  unsigned char ID = 0;
+    unsigned char ID = 0;
 
-  ID = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_WHO_AM_I);
-  if (FXAS21002C_ID == ID)
-  {
-    //        PRINTF("\n FXAS21002 is OK\n");
-    return 0;
-  }
-  else
-  {
-    //        PRINTF("\n FXAS21002 is Failed\n\rCheck ID = %x \n" , ID);
-  }
-  return 1;
+    ID = FX_Read_Byte(FXAS21002C_ADDR, FXAS21002C_WHO_AM_I);
+    if (FXAS21002C_ID == ID)
+    {
+        //        PRINTF("\n FXAS21002 is OK\n");
+        return 0;
+    }
+    else
+    {
+        //        PRINTF("\n FXAS21002 is Failed\n\rCheck ID = %x \n" , ID);
+    }
+    return 1;
 }
 
 /*--------------------------------------------------------------------------------------
@@ -592,7 +592,7 @@ unsigned char FX_21002_Check(void)
 */
 unsigned char FX_Read_Len(unsigned char addr, unsigned char reg, unsigned char len, unsigned char *buf)
 {
-  return IIC_ReadMultByteFromSlave(addr << 1, reg, len, buf);
+    return IIC_ReadMultByteFromSlave(addr << 1, reg, len, buf);
 }
 
 /*!
@@ -612,7 +612,7 @@ unsigned char FX_Read_Len(unsigned char addr, unsigned char reg, unsigned char l
 */
 unsigned char FX_Write_Byte(unsigned char addr, unsigned char reg, unsigned char value)
 {
-  return IIC_WriteByteToSlave(addr << 1, reg, value);
+    return IIC_WriteByteToSlave(addr << 1, reg, value);
 }
 
 /*!
@@ -631,7 +631,7 @@ unsigned char FX_Write_Byte(unsigned char addr, unsigned char reg, unsigned char
 */
 unsigned char FX_Read_Byte(unsigned char addr, unsigned char reg)
 {
-  unsigned char value[1];
-  FX_Read_Len(addr, reg, 1, value);
-  return value[0];
+    unsigned char value[1];
+    FX_Read_Len(addr, reg, 1, value);
+    return value[0];
 }

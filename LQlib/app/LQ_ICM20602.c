@@ -39,44 +39,44 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 */
 void Test_ICM20602(void)
 {
-  char txt[30];
-  short aacx, aacy, aacz;    //加速度传感器原始数据
-  short gyrox, gyroy, gyroz; //陀螺仪原始数据
-  OLED_Init();               //LCD初始化
-  OLED_CLS();                //LCD清屏
+    char txt[30];
+    short aacx, aacy, aacz;    //加速度传感器原始数据
+    short gyrox, gyroy, gyroz; //陀螺仪原始数据
+    OLED_Init();               //LCD初始化
+    OLED_CLS();                //LCD清屏
 
-  QSPI_InitConfig(QSPI2_CLK_P15_8, QSPI2_MISO_P15_7, QSPI2_MOSI_P15_5, QSPI2_CS_P15_2, 5000000, 3);
+    QSPI_InitConfig(QSPI2_CLK_P15_8, QSPI2_MISO_P15_7, QSPI2_MOSI_P15_5, QSPI2_CS_P15_2, 5000000, 3);
 
-  OLED_P8x16Str(15, 0, "LQ 20602 Test");
+    OLED_P8x16Str(15, 0, "LQ 20602 Test");
 
-  if (ICM20602_Init())
-  {
+    if (ICM20602_Init())
+    {
 
-    OLED_P8x16Str(15, 2, "ICM20602 Test Fail");
+        OLED_P8x16Str(15, 2, "ICM20602 Test Fail");
 #pragma warning 557 // 屏蔽警告
-    while (1)
-      ;
+        while (1)
+            ;
 #pragma warning default // 打开警告
-  }
+    }
 
-  while (1)
-  {
-    ICM_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
-    sprintf((char *)txt, "ax:%06d", aacx);
-    OLED_P6x8Str(0, 2, txt);
-    sprintf((char *)txt, "ay:%06d", aacy);
-    OLED_P6x8Str(0, 3, txt);
-    sprintf((char *)txt, "az:%06d", aacz);
-    OLED_P6x8Str(0, 4, txt);
-    sprintf((char *)txt, "gx:%06d", gyrox);
-    OLED_P6x8Str(0, 5, txt);
-    sprintf((char *)txt, "gy:%06d", gyroy);
-    OLED_P6x8Str(0, 6, txt);
-    sprintf((char *)txt, "gz:%06d", gyroz);
-    OLED_P6x8Str(0, 7, txt);
+    while (1)
+    {
+        ICM_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
+        sprintf((char *)txt, "ax:%06d", aacx);
+        OLED_P6x8Str(0, 2, txt);
+        sprintf((char *)txt, "ay:%06d", aacy);
+        OLED_P6x8Str(0, 3, txt);
+        sprintf((char *)txt, "az:%06d", aacz);
+        OLED_P6x8Str(0, 4, txt);
+        sprintf((char *)txt, "gx:%06d", gyrox);
+        OLED_P6x8Str(0, 5, txt);
+        sprintf((char *)txt, "gy:%06d", gyroy);
+        OLED_P6x8Str(0, 6, txt);
+        sprintf((char *)txt, "gz:%06d", gyroz);
+        OLED_P6x8Str(0, 7, txt);
 
-    delayms(500);
-  }
+        delayms(500);
+    }
 }
 
 /*!
@@ -94,14 +94,14 @@ void Test_ICM20602(void)
 */
 void delayms_icm(uint16 ms)
 {
-  volatile unsigned long i = 0;
-  while (ms--)
-  {
-    for (i = 0; i < 30000; ++i)
+    volatile unsigned long i = 0;
+    while (ms--)
     {
-      __asm("NOP"); /* delay */
+        for (i = 0; i < 30000; ++i)
+        {
+            __asm("NOP"); /* delay */
+        }
     }
-  }
 }
 
 /*!
@@ -119,39 +119,39 @@ void delayms_icm(uint16 ms)
   */
 unsigned char ICM20602_Init(void)
 {
-  unsigned char res;
-  res = ICM_Read_Byte(WHO_AM_I); //读取ICM20602的ID
-  if (res == 0x12)               //器件ID正确
-  {
-    //        PRINTF("ICM20602 is OK!\n");
-  }
-  else
-  {
-    //        PRINTF("\r\nThe correct IMU was not detected\r\nPlease check the wiring ID=%X\r\n",res);
-    return 1;
-  }
+    unsigned char res;
+    res = ICM_Read_Byte(WHO_AM_I); //读取ICM20602的ID
+    if (res == 0x12)               //器件ID正确
+    {
+        //        PRINTF("ICM20602 is OK!\n");
+    }
+    else
+    {
+        //        PRINTF("\r\nThe correct IMU was not detected\r\nPlease check the wiring ID=%X\r\n",res);
+        return 1;
+    }
 
-  res = 0;
-  res += ICM_Write_Byte(ICM_PWR_MGMT1_REG, 0X80); //复位ICM20602
-  delayms_icm(100);                               //延时100ms
-  res += ICM_Write_Byte(ICM_PWR_MGMT1_REG, 0X00); //唤醒ICM20602
-  res += ICM_Set_Gyro_Fsr(3);                     //陀螺仪传感器,±2000dps
-  res += ICM_Set_Accel_Fsr(1);                    //加速度传感器,±4g
-  res += ICM_Set_Rate(1000);                      //设置采样率1000Hz
-  res += ICM_Write_Byte(ICM_CFG_REG, 0x02);       //设置数字低通滤波器   98hz
-  res += ICM_Write_Byte(ICM_INT_EN_REG, 0X00);    //关闭所有中断
-  res += ICM_Write_Byte(ICM_USER_CTRL_REG, 0X00); //I2C主模式关闭
-  res += ICM_Write_Byte(ICM_PWR_MGMT1_REG, 0X01); //设置CLKSEL,PLL X轴为参考
-  res += ICM_Write_Byte(ICM_PWR_MGMT2_REG, 0X00); //加速度与陀螺仪都工作
+    res = 0;
+    res += ICM_Write_Byte(ICM_PWR_MGMT1_REG, 0X80); //复位ICM20602
+    delayms_icm(100);                               //延时100ms
+    res += ICM_Write_Byte(ICM_PWR_MGMT1_REG, 0X00); //唤醒ICM20602
+    res += ICM_Set_Gyro_Fsr(3);                     //陀螺仪传感器,±2000dps
+    res += ICM_Set_Accel_Fsr(1);                    //加速度传感器,±4g
+    res += ICM_Set_Rate(1000);                      //设置采样率1000Hz
+    res += ICM_Write_Byte(ICM_CFG_REG, 0x02);       //设置数字低通滤波器   98hz
+    res += ICM_Write_Byte(ICM_INT_EN_REG, 0X00);    //关闭所有中断
+    res += ICM_Write_Byte(ICM_USER_CTRL_REG, 0X00); //I2C主模式关闭
+    res += ICM_Write_Byte(ICM_PWR_MGMT1_REG, 0X01); //设置CLKSEL,PLL X轴为参考
+    res += ICM_Write_Byte(ICM_PWR_MGMT2_REG, 0X00); //加速度与陀螺仪都工作
 
-  if (res == 0) //上面寄存器都写入成功
-  {
-    //        PRINTF("MPU set is OK!\n");
-  }
-  else
-    return 1;
+    if (res == 0) //上面寄存器都写入成功
+    {
+        //        PRINTF("MPU set is OK!\n");
+    }
+    else
+        return 1;
 
-  return 0;
+    return 0;
 }
 
 /*!
@@ -169,7 +169,7 @@ unsigned char ICM20602_Init(void)
   */
 unsigned char ICM_Set_Gyro_Fsr(unsigned char fsr)
 {
-  return ICM_Write_Byte(ICM_GYRO_CFG_REG, fsr << 3);
+    return ICM_Write_Byte(ICM_GYRO_CFG_REG, fsr << 3);
 }
 
 /*!
@@ -187,7 +187,7 @@ unsigned char ICM_Set_Gyro_Fsr(unsigned char fsr)
   */
 unsigned char ICM_Set_Accel_Fsr(unsigned char fsr)
 {
-  return ICM_Write_Byte(ICM_ACCEL_CFG_REG, fsr << 3);
+    return ICM_Write_Byte(ICM_ACCEL_CFG_REG, fsr << 3);
 }
 
 /*!
@@ -205,20 +205,20 @@ unsigned char ICM_Set_Accel_Fsr(unsigned char fsr)
   */
 unsigned char ICM_Set_LPF(uint16 lpf)
 {
-  unsigned char data = 0;
-  if (lpf >= 188)
-    data = 1;
-  else if (lpf >= 98)
-    data = 2;
-  else if (lpf >= 42)
-    data = 3;
-  else if (lpf >= 20)
-    data = 4;
-  else if (lpf >= 10)
-    data = 5;
-  else
-    data = 6;
-  return ICM_Write_Byte(ICM_CFG_REG, data); //设置数字低通滤波器
+    unsigned char data = 0;
+    if (lpf >= 188)
+        data = 1;
+    else if (lpf >= 98)
+        data = 2;
+    else if (lpf >= 42)
+        data = 3;
+    else if (lpf >= 20)
+        data = 4;
+    else if (lpf >= 10)
+        data = 5;
+    else
+        data = 6;
+    return ICM_Write_Byte(ICM_CFG_REG, data); //设置数字低通滤波器
 }
 
 /*!
@@ -236,14 +236,14 @@ unsigned char ICM_Set_LPF(uint16 lpf)
   */
 unsigned char ICM_Set_Rate(uint16 rate)
 {
-  unsigned char data;
-  if (rate > 1000)
-    rate = 1000;
-  if (rate < 4)
-    rate = 4;
-  data = 1000 / rate - 1;
-  ICM_Write_Byte(ICM_SAMPLE_RATE_REG, data); //设置数字低通滤波器
-  return ICM_Set_LPF(rate / 2);              //自动设置LPF为采样率的一半
+    unsigned char data;
+    if (rate > 1000)
+        rate = 1000;
+    if (rate < 4)
+        rate = 4;
+    data = 1000 / rate - 1;
+    ICM_Write_Byte(ICM_SAMPLE_RATE_REG, data); //设置数字低通滤波器
+    return ICM_Set_LPF(rate / 2);              //自动设置LPF为采样率的一半
 }
 
 /*!
@@ -261,13 +261,13 @@ unsigned char ICM_Set_Rate(uint16 rate)
   */
 short ICM_Get_Temperature(void)
 {
-  unsigned char buf[3];
-  short raw;
-  float temp;
-  ICM_Read_Len(ICM_TEMP_OUTH_REG, 2, buf);
-  raw = ((uint16)buf[1] << 8) | buf[2];
-  temp = 21 + ((double)raw) / 333.87;
-  return (short)temp * 100;
+    unsigned char buf[3];
+    short raw;
+    float temp;
+    ICM_Read_Len(ICM_TEMP_OUTH_REG, 2, buf);
+    raw = ((uint16)buf[1] << 8) | buf[2];
+    temp = 21 + ((double)raw) / 333.87;
+    return (short)temp * 100;
 }
 
 /*!
@@ -286,15 +286,15 @@ short ICM_Get_Temperature(void)
   */
 unsigned char ICM_Get_Gyroscope(short *gx, short *gy, short *gz)
 {
-  unsigned char buf[7], res;
-  res = ICM_Read_Len(ICM_GYRO_XOUTH_REG, 6, buf);
-  if (res == 0)
-  {
-    *gx = ((uint16)buf[1] << 8) | buf[2];
-    *gy = ((uint16)buf[3] << 8) | buf[4];
-    *gz = ((uint16)buf[5] << 8) | buf[6];
-  }
-  return res;
+    unsigned char buf[7], res;
+    res = ICM_Read_Len(ICM_GYRO_XOUTH_REG, 6, buf);
+    if (res == 0)
+    {
+        *gx = ((uint16)buf[1] << 8) | buf[2];
+        *gy = ((uint16)buf[3] << 8) | buf[4];
+        *gz = ((uint16)buf[5] << 8) | buf[6];
+    }
+    return res;
 }
 
 /*!
@@ -313,15 +313,15 @@ unsigned char ICM_Get_Gyroscope(short *gx, short *gy, short *gz)
   */
 unsigned char ICM_Get_Accelerometer(short *ax, short *ay, short *az)
 {
-  unsigned char buf[7], res;
-  res = ICM_Read_Len(ICM_ACCEL_XOUTH_REG, 6, buf);
-  if (res == 0)
-  {
-    *ax = ((uint16)buf[1] << 8) | buf[2];
-    *ay = ((uint16)buf[3] << 8) | buf[4];
-    *az = ((uint16)buf[5] << 8) | buf[6];
-  }
-  return res;
+    unsigned char buf[7], res;
+    res = ICM_Read_Len(ICM_ACCEL_XOUTH_REG, 6, buf);
+    if (res == 0)
+    {
+        *ax = ((uint16)buf[1] << 8) | buf[2];
+        *ay = ((uint16)buf[3] << 8) | buf[4];
+        *az = ((uint16)buf[5] << 8) | buf[6];
+    }
+    return res;
 }
 
 /*!
@@ -341,18 +341,18 @@ unsigned char ICM_Get_Accelerometer(short *ax, short *ay, short *az)
   */
 unsigned char ICM_Get_Raw_data(short *ax, short *ay, short *az, short *gx, short *gy, short *gz)
 {
-  unsigned char buf[15], res;
-  res = ICM_Read_Len(ICM_ACCEL_XOUTH_REG, 14, buf);
-  if (res == 0)
-  {
-    *ax = ((uint16)buf[1] << 8) | buf[2];
-    *ay = ((uint16)buf[3] << 8) | buf[4];
-    *az = ((uint16)buf[5] << 8) | buf[6];
-    *gx = ((uint16)buf[9] << 8) | buf[10];
-    *gy = ((uint16)buf[11] << 8) | buf[12];
-    *gz = ((uint16)buf[13] << 8) | buf[14];
-  }
-  return res;
+    unsigned char buf[15], res;
+    res = ICM_Read_Len(ICM_ACCEL_XOUTH_REG, 14, buf);
+    if (res == 0)
+    {
+        *ax = ((uint16)buf[1] << 8) | buf[2];
+        *ay = ((uint16)buf[3] << 8) | buf[4];
+        *az = ((uint16)buf[5] << 8) | buf[6];
+        *gx = ((uint16)buf[9] << 8) | buf[10];
+        *gy = ((uint16)buf[11] << 8) | buf[12];
+        *gz = ((uint16)buf[13] << 8) | buf[14];
+    }
+    return res;
 }
 
 /*!
@@ -373,10 +373,10 @@ unsigned char ICM_Get_Raw_data(short *ax, short *ay, short *az, short *gx, short
   */
 unsigned char ICM_Read_Len(unsigned char reg, unsigned char len, unsigned char *buf)
 {
-  buf[0] = reg | 0x80;
+    buf[0] = reg | 0x80;
 
-  /* 写入要读的寄存器地址 */
-  return QSPI_ReadWriteNByte(QSPI2, buf, buf, len + 1);
+    /* 写入要读的寄存器地址 */
+    return QSPI_ReadWriteNByte(QSPI2, buf, buf, len + 1);
 }
 
 /*!
@@ -395,12 +395,12 @@ unsigned char ICM_Read_Len(unsigned char reg, unsigned char len, unsigned char *
   */
 unsigned char ICM_Write_Byte(unsigned char reg, unsigned char value)
 {
-  unsigned char buff[2];
+    unsigned char buff[2];
 
-  buff[0] = reg;   //先发送寄存器
-  buff[1] = value; //再发送数据
+    buff[0] = reg;   //先发送寄存器
+    buff[1] = value; //再发送数据
 
-  return QSPI_ReadWriteNByte(QSPI2, buff, buff, 2); //发送buff里数据，并采集到 buff里
+    return QSPI_ReadWriteNByte(QSPI2, buff, buff, 2); //发送buff里数据，并采集到 buff里
 }
 
 /*!
@@ -418,9 +418,9 @@ unsigned char ICM_Write_Byte(unsigned char reg, unsigned char value)
   */
 unsigned char ICM_Read_Byte(unsigned char reg)
 {
-  unsigned char buff[2];
-  buff[0] = reg | 0x80; //先发送寄存器
+    unsigned char buff[2];
+    buff[0] = reg | 0x80; //先发送寄存器
 
-  QSPI_ReadWriteNByte(QSPI2, buff, buff, 2);
-  return buff[1];
+    QSPI_ReadWriteNByte(QSPI2, buff, buff, 2);
+    return buff[1];
 }

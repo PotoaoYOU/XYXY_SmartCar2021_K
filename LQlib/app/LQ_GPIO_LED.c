@@ -27,10 +27,10 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 *************************************************************************/
 void GPIO_LED_Init(void)
 {
-  P2M1 &= 0xFE;
-  P2M1 |= 0x00;
-  P2M0 &= 0xFE;
-  P2M0 |= 0x01; //设置为推挽输出
+    P2M1 &= 0xFE;
+    P2M1 |= 0x00;
+    P2M0 &= 0xFE;
+    P2M0 |= 0x01; //设置为推挽输出
 }
 
 /*************************************************************************
@@ -43,69 +43,69 @@ void GPIO_LED_Init(void)
 *************************************************************************/
 void LED_Ctrl(LEDn_e LEDno, LEDs_e sta)
 {
-  switch (LEDno)
-  {
-  case LED0:
-    if (sta == ON)
-      LED0p = 0;
-    else if (sta == OFF)
-      LED0p = 1;
-    else if (sta == RVS)
-      (LED0p) ? (LED0p = 0) : (LED0p = 1);
-    break;
-
-  case LED1:
-    if (sta == ON)
-      LED1p = 0;
-    else if (sta == OFF)
-      LED1p = 1;
-    else if (sta == RVS)
-      (LED1p) ? (LED1p = 0) : (LED1p = 1);
-    break;
-
-  case LED2:
-    if (sta == ON)
-      LED2p = 0;
-    else if (sta == OFF)
-      LED2p = 1;
-    else if (sta == RVS)
-      (LED2p) ? (LED2p = 0) : (LED2p = 1);
-    break;
-
-  case LED3:
-    if (sta == ON)
-      LED3p = 0;
-    else if (sta == OFF)
-      LED3p = 1;
-    else if (sta == RVS)
-      (LED3p) ? (LED3p = 0) : (LED3p = 1);
-    break;
-  case LEDALL:
-    if (sta == ON)
+    switch (LEDno)
     {
-      LED0p = 0;
-      LED1p = 0;
-      LED2p = 0;
-      LED3p = 0;
+    case LED0:
+        if (sta == ON)
+            LED0p = 0;
+        else if (sta == OFF)
+            LED0p = 1;
+        else if (sta == RVS)
+            (LED0p) ? (LED0p = 0) : (LED0p = 1);
+        break;
+
+    case LED1:
+        if (sta == ON)
+            LED1p = 0;
+        else if (sta == OFF)
+            LED1p = 1;
+        else if (sta == RVS)
+            (LED1p) ? (LED1p = 0) : (LED1p = 1);
+        break;
+
+    case LED2:
+        if (sta == ON)
+            LED2p = 0;
+        else if (sta == OFF)
+            LED2p = 1;
+        else if (sta == RVS)
+            (LED2p) ? (LED2p = 0) : (LED2p = 1);
+        break;
+
+    case LED3:
+        if (sta == ON)
+            LED3p = 0;
+        else if (sta == OFF)
+            LED3p = 1;
+        else if (sta == RVS)
+            (LED3p) ? (LED3p = 0) : (LED3p = 1);
+        break;
+    case LEDALL:
+        if (sta == ON)
+        {
+            LED0p = 0;
+            LED1p = 0;
+            LED2p = 0;
+            LED3p = 0;
+        }
+        else if (sta == OFF)
+        {
+            LED0p = 1;
+            LED1p = 1;
+            LED2p = 1;
+            LED3p = 1;
+        }
+        else if (sta == RVS)
+        {
+            (LED0p) ? (LED0p = 0) : (LED0p = 1);
+            (LED1p) ? (LED1p = 0) : (LED1p = 1);
+            (LED2p) ? (LED2p = 0) : (LED2p = 1);
+            (LED3p) ? (LED3p = 0) : (LED3p = 1);
+        }
+        break;
+    default:
+        break;
     }
-    else if (sta == OFF)
-    {
-      LED0p = 1;
-      LED1p = 1;
-      LED2p = 1;
-      LED3p = 1;
-    }
-    else if (sta == RVS)
-    {
-      (LED0p) ? (LED0p = 0) : (LED0p = 1);
-      (LED1p) ? (LED1p = 0) : (LED1p = 1);
-      (LED2p) ? (LED2p = 0) : (LED2p = 1);
-      (LED3p) ? (LED3p = 0) : (LED3p = 1);
-    }
-    break;
-  default:
-    break;
-  }
 }
 /**************************************************************************
 函数功能：LED闪烁
@@ -114,11 +114,11 @@ void LED_Ctrl(LEDn_e LEDno, LEDs_e sta)
 **************************************************************************/
 void Led_Flash(u16 time)
 {
-  static int temp;
-  if (0 == time)
-    LED0p = 0;
-  else if (++temp > time)
-    LED0p = ~LED0p, temp = 0;
+    static int temp;
+    if (0 == time)
+        LED0p = 0;
+    else if (++temp > time)
+        LED0p = ~LED0p, temp = 0;
 }
 /*************************************************************************
 *  函数名称：void Test_GPIO_LED(void)
@@ -130,10 +130,10 @@ void Led_Flash(u16 time)
 *************************************************************************/
 void Test_GPIO_LED(void)
 {
-  GPIO_LED_Init();
-  while (1)
-  {
-    LED_Ctrl(LEDALL, RVS); //LED同时闪烁
-    delayms(200);          //延时等待
-  }
+    GPIO_LED_Init();
+    while (1)
+    {
+        LED_Ctrl(LEDALL, RVS); //LED同时闪烁
+        delayms(200);          //延时等待
+    }
 }

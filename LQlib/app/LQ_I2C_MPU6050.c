@@ -32,41 +32,41 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 */
 void Test_MPU6050(void)
 {
-  char txt[30];
-  signed short aacx, aacy, aacz;    //加速度传感器原始数据
-  signed short gyrox, gyroy, gyroz; //陀螺仪原始数据
+    char txt[30];
+    signed short aacx, aacy, aacz;    //加速度传感器原始数据
+    signed short gyrox, gyroy, gyroz; //陀螺仪原始数据
 
-  OLED_Init(); //LCD初始化
-  OLED_CLS();  //LCD清屏
-  IIC_Init();
+    OLED_Init(); //LCD初始化
+    OLED_CLS();  //LCD清屏
+    IIC_Init();
 
-  OLED_P8x16Str(15, 0, "LQ 6050 Test");
+    OLED_P8x16Str(15, 0, "LQ 6050 Test");
 
-  if (MPU6050_Init())
-  {
-    OLED_P8x16Str(15, 2, "6050 Test Fail \r\n");
+    if (MPU6050_Init())
+    {
+        OLED_P8x16Str(15, 2, "6050 Test Fail \r\n");
+        while (1)
+            ;
+    }
+
     while (1)
-      ;
-  }
+    {
+        MPU_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
+        sprintf((char *)txt, "ax:%06d", aacx);
+        OLED_P6x8Str(0, 2, txt);
+        sprintf((char *)txt, "ay:%06d", aacy);
+        OLED_P6x8Str(0, 3, txt);
+        sprintf((char *)txt, "az:%06d", aacz);
+        OLED_P6x8Str(0, 4, txt);
+        sprintf((char *)txt, "gx:%06d", gyrox);
+        OLED_P6x8Str(0, 5, txt);
+        sprintf((char *)txt, "gy:%06d", gyroy);
+        OLED_P6x8Str(0, 6, txt);
+        sprintf((char *)txt, "gz:%06d", gyroz);
+        OLED_P6x8Str(0, 7, txt);
 
-  while (1)
-  {
-    MPU_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
-    sprintf((char *)txt, "ax:%06d", aacx);
-    OLED_P6x8Str(0, 2, txt);
-    sprintf((char *)txt, "ay:%06d", aacy);
-    OLED_P6x8Str(0, 3, txt);
-    sprintf((char *)txt, "az:%06d", aacz);
-    OLED_P6x8Str(0, 4, txt);
-    sprintf((char *)txt, "gx:%06d", gyrox);
-    OLED_P6x8Str(0, 5, txt);
-    sprintf((char *)txt, "gy:%06d", gyroy);
-    OLED_P6x8Str(0, 6, txt);
-    sprintf((char *)txt, "gz:%06d", gyroz);
-    OLED_P6x8Str(0, 7, txt);
-
-    delayms(100);
-  }
+        delayms(100);
+    }
 }
 
 /**
@@ -84,14 +84,14 @@ void Test_MPU6050(void)
 */
 void delayms_mpu(unsigned short ms)
 {
-  while (ms--)
-  {
-    unsigned short i = 300;
-    while (i--)
+    while (ms--)
     {
-      ;
+        unsigned short i = 300;
+        while (i--)
+        {
+            ;
+        }
     }
-  }
 }
 
 /**
@@ -109,36 +109,36 @@ void delayms_mpu(unsigned short ms)
 */
 unsigned char MPU6050_Init(void)
 {
-  int res;
-  res = MPU_Read_Byte(MPU6050_ADDR, WHO_AM_I); //读取MPU6050的ID
-  if (res == MPU6050_ID)                       //器件ID正确
-  {
-    //printf("MPU6050 is OK!\r\n");
-  }
-  else if (res == 0x12) //ICM20602 器件ID正确
-  {
+    int res;
+    res = MPU_Read_Byte(MPU6050_ADDR, WHO_AM_I); //读取MPU6050的ID
+    if (res == MPU6050_ID)                       //器件ID正确
+    {
+        //printf("MPU6050 is OK!\r\n");
+    }
+    else if (res == 0x12) //ICM20602 器件ID正确
+    {
 
-    //printf("ICM20602 is OK!\r\n");
-  }
-  else
-  {
-    //printf("\r\nThe correct IMU was not detected\r\nPlease check the wiring ID=%X\r\n",res);
-    return 1;
-  }
+        //printf("ICM20602 is OK!\r\n");
+    }
+    else
+    {
+        //printf("\r\nThe correct IMU was not detected\r\nPlease check the wiring ID=%X\r\n",res);
+        return 1;
+    }
 
-  MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT1_REG, 0X80); //复位MPU6050
-  delayms_mpu(100);                                      //延时100ms
-  MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT1_REG, 0X00); //唤醒MPU6050
-  MPU_Set_Gyro_Fsr(3);                                   //陀螺仪传感器,±2000dps
-  MPU_Set_Accel_Fsr(1);                                  //加速度传感器,±4g
-  MPU_Set_Rate(1000);                                    //设置采样率1000Hz
-  MPU_Write_Byte(MPU6050_ADDR, MPU_CFG_REG, 0x02);       //设置数字低通滤波器   98hz
-  MPU_Write_Byte(MPU6050_ADDR, MPU_INT_EN_REG, 0X00);    //关闭所有中断
-  MPU_Write_Byte(MPU6050_ADDR, MPU_USER_CTRL_REG, 0X00); //I2C主模式关闭
-  MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT1_REG, 0X01); //设置CLKSEL,PLL X轴为参考
-  MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT2_REG, 0X00); //加速度与陀螺仪都工作
+    MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT1_REG, 0X80); //复位MPU6050
+    delayms_mpu(100);                                      //延时100ms
+    MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT1_REG, 0X00); //唤醒MPU6050
+    MPU_Set_Gyro_Fsr(3);                                   //陀螺仪传感器,±2000dps
+    MPU_Set_Accel_Fsr(1);                                  //加速度传感器,±4g
+    MPU_Set_Rate(1000);                                    //设置采样率1000Hz
+    MPU_Write_Byte(MPU6050_ADDR, MPU_CFG_REG, 0x02);       //设置数字低通滤波器   98hz
+    MPU_Write_Byte(MPU6050_ADDR, MPU_INT_EN_REG, 0X00);    //关闭所有中断
+    MPU_Write_Byte(MPU6050_ADDR, MPU_USER_CTRL_REG, 0X00); //I2C主模式关闭
+    MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT1_REG, 0X01); //设置CLKSEL,PLL X轴为参考
+    MPU_Write_Byte(MPU6050_ADDR, MPU_PWR_MGMT2_REG, 0X00); //加速度与陀螺仪都工作
 
-  return 0;
+    return 0;
 }
 
 /**
@@ -156,7 +156,7 @@ unsigned char MPU6050_Init(void)
 */
 unsigned char MPU_Set_Gyro_Fsr(unsigned char fsr)
 {
-  return MPU_Write_Byte(MPU6050_ADDR, MPU_GYRO_CFG_REG, fsr << 3);
+    return MPU_Write_Byte(MPU6050_ADDR, MPU_GYRO_CFG_REG, fsr << 3);
 }
 
 /**
@@ -174,7 +174,7 @@ unsigned char MPU_Set_Gyro_Fsr(unsigned char fsr)
 */
 unsigned char MPU_Set_Accel_Fsr(unsigned char fsr)
 {
-  return MPU_Write_Byte(MPU6050_ADDR, MPU_ACCEL_CFG_REG, fsr << 3);
+    return MPU_Write_Byte(MPU6050_ADDR, MPU_ACCEL_CFG_REG, fsr << 3);
 }
 
 /**
@@ -192,21 +192,21 @@ unsigned char MPU_Set_Accel_Fsr(unsigned char fsr)
 */
 unsigned char MPU_Set_LPF(unsigned short lpf)
 {
-  unsigned char dat = 0;
+    unsigned char dat = 0;
 
-  if (lpf >= 188)
-    dat = 1;
-  else if (lpf >= 98)
-    dat = 2;
-  else if (lpf >= 42)
-    dat = 3;
-  else if (lpf >= 20)
-    dat = 4;
-  else if (lpf >= 10)
-    dat = 5;
-  else
-    dat = 6;
-  return MPU_Write_Byte(MPU6050_ADDR, MPU_CFG_REG, dat); //设置数字低通滤波器
+    if (lpf >= 188)
+        dat = 1;
+    else if (lpf >= 98)
+        dat = 2;
+    else if (lpf >= 42)
+        dat = 3;
+    else if (lpf >= 20)
+        dat = 4;
+    else if (lpf >= 10)
+        dat = 5;
+    else
+        dat = 6;
+    return MPU_Write_Byte(MPU6050_ADDR, MPU_CFG_REG, dat); //设置数字低通滤波器
 }
 
 /**
@@ -224,15 +224,15 @@ unsigned char MPU_Set_LPF(unsigned short lpf)
 */
 unsigned char MPU_Set_Rate(unsigned short rate)
 {
-  unsigned char dat;
+    unsigned char dat;
 
-  if (rate > 1000)
-    rate = 1000;
-  if (rate < 4)
-    rate = 4;
-  dat = 1000 / rate - 1;
-  MPU_Write_Byte(MPU6050_ADDR, MPU_SAMPLE_RATE_REG, dat); //设置数字低通滤波器
-  return MPU_Set_LPF(rate / 2);                           //自动设置LPF为采样率的一半
+    if (rate > 1000)
+        rate = 1000;
+    if (rate < 4)
+        rate = 4;
+    dat = 1000 / rate - 1;
+    MPU_Write_Byte(MPU6050_ADDR, MPU_SAMPLE_RATE_REG, dat); //设置数字低通滤波器
+    return MPU_Set_LPF(rate / 2);                           //自动设置LPF为采样率的一半
 }
 
 /**
@@ -250,13 +250,13 @@ unsigned char MPU_Set_Rate(unsigned short rate)
 */
 short MPU_Get_Temperature(void)
 {
-  unsigned char buf[2];
-  short raw;
-  float temp;
-  MPU_Read_Len(MPU6050_ADDR, MPU_TEMP_OUTH_REG, 2, buf);
-  raw = ((u16)buf[0] << 8) | buf[1];
-  temp = 21 + ((double)raw) / 333.87;
-  return (short)temp * 100;
+    unsigned char buf[2];
+    short raw;
+    float temp;
+    MPU_Read_Len(MPU6050_ADDR, MPU_TEMP_OUTH_REG, 2, buf);
+    raw = ((u16)buf[0] << 8) | buf[1];
+    temp = 21 + ((double)raw) / 333.87;
+    return (short)temp * 100;
 }
 
 /**
@@ -275,15 +275,15 @@ short MPU_Get_Temperature(void)
 */
 unsigned char MPU_Get_Gyroscope(signed short *gx, signed short *gy, signed short *gz)
 {
-  unsigned char buf[6], res;
-  res = MPU_Read_Len(MPU6050_ADDR, MPU_GYRO_XOUTH_REG, 6, buf);
-  if (res == 0)
-  {
-    *gx = ((unsigned short)buf[0] << 8) | buf[1];
-    *gy = ((unsigned short)buf[2] << 8) | buf[3];
-    *gz = ((unsigned short)buf[4] << 8) | buf[5];
-  }
-  return res;
+    unsigned char buf[6], res;
+    res = MPU_Read_Len(MPU6050_ADDR, MPU_GYRO_XOUTH_REG, 6, buf);
+    if (res == 0)
+    {
+        *gx = ((unsigned short)buf[0] << 8) | buf[1];
+        *gy = ((unsigned short)buf[2] << 8) | buf[3];
+        *gz = ((unsigned short)buf[4] << 8) | buf[5];
+    }
+    return res;
 }
 
 /**
@@ -302,15 +302,15 @@ unsigned char MPU_Get_Gyroscope(signed short *gx, signed short *gy, signed short
 */
 unsigned char MPU_Get_Accelerometer(signed short *ax, signed short *ay, signed short *az)
 {
-  unsigned char buf[6], res;
-  res = MPU_Read_Len(MPU6050_ADDR, MPU_ACCEL_XOUTH_REG, 6, buf);
-  if (res == 0)
-  {
-    *ax = ((unsigned short)buf[0] << 8) | buf[1];
-    *ay = ((unsigned short)buf[2] << 8) | buf[3];
-    *az = ((unsigned short)buf[4] << 8) | buf[5];
-  }
-  return res;
+    unsigned char buf[6], res;
+    res = MPU_Read_Len(MPU6050_ADDR, MPU_ACCEL_XOUTH_REG, 6, buf);
+    if (res == 0)
+    {
+        *ax = ((unsigned short)buf[0] << 8) | buf[1];
+        *ay = ((unsigned short)buf[2] << 8) | buf[3];
+        *az = ((unsigned short)buf[4] << 8) | buf[5];
+    }
+    return res;
 }
 
 /**
@@ -329,18 +329,18 @@ unsigned char MPU_Get_Accelerometer(signed short *ax, signed short *ay, signed s
 */
 unsigned char MPU_Get_Raw_data(signed short *ax, signed short *ay, signed short *az, signed short *gx, signed short *gy, signed short *gz)
 {
-  unsigned char buf[14], res;
-  res = MPU_Read_Len(MPU6050_ADDR, MPU_ACCEL_XOUTH_REG, 14, buf);
-  if (res == 0)
-  {
-    *ax = ((unsigned short)buf[0] << 8) | buf[1];
-    *ay = ((unsigned short)buf[2] << 8) | buf[3];
-    *az = ((unsigned short)buf[4] << 8) | buf[5];
-    *gx = ((unsigned short)buf[8] << 8) | buf[9];
-    *gy = ((unsigned short)buf[10] << 8) | buf[11];
-    *gz = ((unsigned short)buf[12] << 8) | buf[13];
-  }
-  return res;
+    unsigned char buf[14], res;
+    res = MPU_Read_Len(MPU6050_ADDR, MPU_ACCEL_XOUTH_REG, 14, buf);
+    if (res == 0)
+    {
+        *ax = ((unsigned short)buf[0] << 8) | buf[1];
+        *ay = ((unsigned short)buf[2] << 8) | buf[3];
+        *az = ((unsigned short)buf[4] << 8) | buf[5];
+        *gx = ((unsigned short)buf[8] << 8) | buf[9];
+        *gy = ((unsigned short)buf[10] << 8) | buf[11];
+        *gz = ((unsigned short)buf[12] << 8) | buf[13];
+    }
+    return res;
 }
 
 /**
@@ -362,7 +362,7 @@ unsigned char MPU_Get_Raw_data(signed short *ax, signed short *ay, signed short 
 */
 unsigned char MPU_Read_Len(unsigned char addr, unsigned char reg, unsigned char len, unsigned char *buf)
 {
-  return IIC_ReadMultByteFromSlave(addr << 1, reg, len, buf);
+    return IIC_ReadMultByteFromSlave(addr << 1, reg, len, buf);
 }
 
 /**
@@ -382,7 +382,7 @@ unsigned char MPU_Read_Len(unsigned char addr, unsigned char reg, unsigned char 
 */
 unsigned char MPU_Write_Byte(unsigned char addr, unsigned char reg, unsigned char value)
 {
-  return IIC_WriteByteToSlave(addr << 1, reg, value);
+    return IIC_WriteByteToSlave(addr << 1, reg, value);
 }
 
 /**
@@ -401,7 +401,7 @@ unsigned char MPU_Write_Byte(unsigned char addr, unsigned char reg, unsigned cha
 */
 unsigned char MPU_Read_Byte(unsigned char addr, unsigned char reg)
 {
-  unsigned char value[1];
-  MPU_Read_Len(addr, reg, 1, value);
-  return value[0];
+    unsigned char value[1];
+    MPU_Read_Len(addr, reg, 1, value);
+    return value[0];
 }

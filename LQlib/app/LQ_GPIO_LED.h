@@ -22,18 +22,18 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 //定义模块号
 typedef enum
 {
-  LED0 = 0, //核心板上LED0
-  LED1 = 1, //核心板上LED1
-  LED2 = 2, //母板上LED0
-  LED3 = 3, //母板上LED1
-  LEDALL = 4
+    LED0 = 0, //核心板上LED0
+    LED1 = 1, //核心板上LED1
+    LED2 = 2, //母板上LED0
+    LED3 = 3, //母板上LED1
+    LEDALL = 4
 } LEDn_e;
 
 typedef enum
 {
-  ON = 0,  //亮
-  OFF = 1, //灭
-  RVS = 2, //反转
+    ON = 0,  //亮
+    OFF = 1, //灭
+    RVS = 2, //反转
 } LEDs_e;
 
 //定义的管脚要对应实际按键

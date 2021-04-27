@@ -94,82 +94,82 @@ u16 PWM4_Duty;
 #ifdef USE7843OR7971
 void MotorInit(u16 freq)
 {
-  P_SW2 |= 0x80;
-  PWM2_PSCRL = (MAIN_Fosc / PWM2_CLOCK) - 1; //主频为22M,PWM分频到10M范围
-  PWM2_CCER1 = 0x00;                         //写 CCMRx 前必须先清零 CCxE 关闭通道
-  PWM2_CCER2 = 0x00;
-  PWM2_CCMR1 = 0x60; //通道模式配置
-  PWM2_CCMR2 = 0x60;
-  PWM2_CCMR3 = 0x60;
-  PWM2_CCMR4 = 0x60;
-  PWM2_CCER1 = 0x33; //配置通道输出使能和极性
-  PWM2_CCER2 = 0x33;
+    P_SW2 |= 0x80;
+    PWM2_PSCRL = (MAIN_Fosc / PWM2_CLOCK) - 1; //主频为22M,PWM分频到10M范围
+    PWM2_CCER1 = 0x00;                         //写 CCMRx 前必须先清零 CCxE 关闭通道
+    PWM2_CCER2 = 0x00;
+    PWM2_CCMR1 = 0x60; //通道模式配置
+    PWM2_CCMR2 = 0x60;
+    PWM2_CCMR3 = 0x60;
+    PWM2_CCMR4 = 0x60;
+    PWM2_CCER1 = 0x33; //配置通道输出使能和极性
+    PWM2_CCER2 = 0x33;
 
-  PWM2_ARRH = (u8)((PWM2_CLOCK / freq) >> 8); //设置周期时间，从0计数到设定数值
-  PWM2_ARRL = (u8)(PWM2_CLOCK / freq);        //
+    PWM2_ARRH = (u8)((PWM2_CLOCK / freq) >> 8); //设置周期时间，从0计数到设定数值
+    PWM2_ARRL = (u8)(PWM2_CLOCK / freq);        //
 
-  PWM2_CCR1H = 0;
-  PWM2_CCR1L = 20; //设置占空比时间
-  PWM2_CCR2H = 0;
-  PWM2_CCR2L = 20; //设置占空比时间
-  PWM2_CCR3H = 0;
-  PWM2_CCR3L = 20; //设置占空比时间
-  PWM2_CCR4H = 0;
-  PWM2_CCR4L = 20; //设置占空比时间
+    PWM2_CCR1H = 0;
+    PWM2_CCR1L = 20; //设置占空比时间
+    PWM2_CCR2H = 0;
+    PWM2_CCR2L = 20; //设置占空比时间
+    PWM2_CCR3H = 0;
+    PWM2_CCR3L = 20; //设置占空比时间
+    PWM2_CCR4H = 0;
+    PWM2_CCR4L = 20; //设置占空比时间
 
-  PWM2_ENO = 0x00;
-  PWM2_ENO |= ENO5P; //使能输出
-  PWM2_ENO |= ENO6P; //使能输出
-  PWM2_ENO |= ENO7P; //使能输出
-  PWM2_ENO |= ENO8P; //使能输出
-  PWM2_PS = 0x00;    //高级 PWM 通道输出脚选择位
-  PWM2_PS |= PWM5_3; //选择 PWM5_3 通道
-  PWM2_PS |= PWM6_3; //选择 PWM6_3 通道 //高级 PWM 通道 4P 输出脚选择位, 0x00:P1.6, 0x40:P2.6, 0x80:P6.6, 0xC0:P3.4
-  PWM2_PS |= PWM7_3;
-  PWM2_PS |= PWM8_3;
-  PWM2_BKR = 0x80;  //使能主输出
-  PWM2_CR1 |= 0x01; //开始计时
-  P_SW2 &= 0x7f;
+    PWM2_ENO = 0x00;
+    PWM2_ENO |= ENO5P; //使能输出
+    PWM2_ENO |= ENO6P; //使能输出
+    PWM2_ENO |= ENO7P; //使能输出
+    PWM2_ENO |= ENO8P; //使能输出
+    PWM2_PS = 0x00;    //高级 PWM 通道输出脚选择位
+    PWM2_PS |= PWM5_3; //选择 PWM5_3 通道
+    PWM2_PS |= PWM6_3; //选择 PWM6_3 通道 //高级 PWM 通道 4P 输出脚选择位, 0x00:P1.6, 0x40:P2.6, 0x80:P6.6, 0xC0:P3.4
+    PWM2_PS |= PWM7_3;
+    PWM2_PS |= PWM8_3;
+    PWM2_BKR = 0x80;  //使能主输出
+    PWM2_CR1 |= 0x01; //开始计时
+    P_SW2 &= 0x7f;
 }
 #elif defined USEDRV8701
 void MotorInit(u16 freq)
 {
-  P_SW2 |= 0x80;
-  PWM2_PSCRL = (MAIN_Fosc / PWM2_CLOCK) - 1; //主频为22M,PWM分频到10M范围
-  PWM2_CCER1 = 0x00;                         //写 CCMRx 前必须先清零 CCxE 关闭通道
-  PWM2_CCER2 = 0x00;
-  PWM2_CCMR1 = 0x60; //通道模式配置
-  PWM2_CCMR2 = 0x60;
-  PWM2_CCMR3 = 0x60;
-  PWM2_CCMR4 = 0x60;
-  PWM2_CCER1 = 0x55; //配置通道输出使能和极性
-  PWM2_CCER2 = 0x55;
+    P_SW2 |= 0x80;
+    PWM2_PSCRL = (MAIN_Fosc / PWM2_CLOCK) - 1; //主频为22M,PWM分频到10M范围
+    PWM2_CCER1 = 0x00;                         //写 CCMRx 前必须先清零 CCxE 关闭通道
+    PWM2_CCER2 = 0x00;
+    PWM2_CCMR1 = 0x60; //通道模式配置
+    PWM2_CCMR2 = 0x60;
+    PWM2_CCMR3 = 0x60;
+    PWM2_CCMR4 = 0x60;
+    PWM2_CCER1 = 0x55; //配置通道输出使能和极性
+    PWM2_CCER2 = 0x55;
 
-  PWM2_ARRH = (u8)((PWM2_CLOCK / freq) >> 8); //设置周期时间，从0计数到设定数值
-  PWM2_ARRL = (u8)(PWM2_CLOCK / freq);        //
+    PWM2_ARRH = (u8)((PWM2_CLOCK / freq) >> 8); //设置周期时间，从0计数到设定数值
+    PWM2_ARRL = (u8)(PWM2_CLOCK / freq);        //
 
-  PWM2_CCR1H = 100;
-  PWM2_CCR1L = 200; //设置占空比时间
-  PWM2_CCR2H = 100;
-  PWM2_CCR2L = 200; //设置占空比时间
+    PWM2_CCR1H = 100;
+    PWM2_CCR1L = 200; //设置占空比时间
+    PWM2_CCR2H = 100;
+    PWM2_CCR2L = 200; //设置占空比时间
 
-  PWM2_ENO = 0x00;
-  PWM2_ENO |= ENO5P; //使能输出
-  //PWM2_ENO |= ENO6P;//使能输出
-  PWM2_ENO |= ENO7P; //使能输出
-  //PWM2_ENO |= ENO8P; //使能输出
-  PWM2_PS = 0x00;    //高级 PWM 通道输出脚选择位
-  PWM2_PS |= PWM5_3; //选择 PWM5_3 通道
-  //PWM2_PS |= PWM6_3; //选择 PWM6_3 通道 //高级 PWM 通道 4P 输出脚选择位, 0x00:P1.6, 0x40:P2.6, 0x80:P6.6, 0xC0:P3.4
-  PWM2_PS |= PWM7_3;
-  //PWM2_PS |= PWM8_3;
-  PWM2_BKR = 0x80;  //使能主输出
-  PWM2_CR1 |= 0x01; //开始计时
+    PWM2_ENO = 0x00;
+    PWM2_ENO |= ENO5P; //使能输出
+    //PWM2_ENO |= ENO6P;//使能输出
+    PWM2_ENO |= ENO7P; //使能输出
+    //PWM2_ENO |= ENO8P; //使能输出
+    PWM2_PS = 0x00;    //高级 PWM 通道输出脚选择位
+    PWM2_PS |= PWM5_3; //选择 PWM5_3 通道
+    //PWM2_PS |= PWM6_3; //选择 PWM6_3 通道 //高级 PWM 通道 4P 输出脚选择位, 0x00:P1.6, 0x40:P2.6, 0x80:P6.6, 0xC0:P3.4
+    PWM2_PS |= PWM7_3;
+    //PWM2_PS |= PWM8_3;
+    PWM2_BKR = 0x80;  //使能主输出
+    PWM2_CR1 |= 0x01; //开始计时
 
-  P7M1 = 0;
-  P7M0 = 0xc0; //P75,P77设置为推挽输出，强上拉，要加限流电阻
+    P7M1 = 0;
+    P7M0 = 0xc0; //P75,P77设置为推挽输出，强上拉，要加限流电阻
 
-  P_SW2 &= 0x7f;
+    P_SW2 &= 0x7f;
 }
 #endif
 
@@ -184,79 +184,79 @@ void MotorInit(u16 freq)
 #ifdef USE7843OR7971
 void MotorCtrl(int16_t motor1, int16_t motor2)
 {
-  if (motor1 < 0)
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR1H = 0; //设置占空比时间
-    PWM2_CCR1L = 0;
-    PWM2_CCR2H = (u8)(-motor1 >> 8); //设置占空比时间
-    PWM2_CCR2L = (u8)(-motor1);
-    P_SW2 &= 0x7f;
-  }
-  else
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR1H = (u8)(motor1 >> 8); //设置占空比时间
-    PWM2_CCR1L = (u8)(motor1);
-    PWM2_CCR2H = 0; //设置占空比时间
-    PWM2_CCR2L = 0;
-    P_SW2 &= 0x7f;
-  }
-  if (motor2 < 0)
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR3H = 0; //设置占空比时间
-    PWM2_CCR3L = 0;
-    PWM2_CCR4H = (u8)(-motor1 >> 8); //设置占空比时间
-    PWM2_CCR4L = (u8)(-motor1);
-    P_SW2 &= 0x7f;
-  }
-  else
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR3H = (u8)(motor1 >> 8); //设置占空比时间
-    PWM2_CCR3L = (u8)(motor1);
-    PWM2_CCR4H = 0; //设置占空比时间
-    PWM2_CCR4L = 0;
-    P_SW2 &= 0x7f;
-  }
+    if (motor1 < 0)
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR1H = 0; //设置占空比时间
+        PWM2_CCR1L = 0;
+        PWM2_CCR2H = (u8)(-motor1 >> 8); //设置占空比时间
+        PWM2_CCR2L = (u8)(-motor1);
+        P_SW2 &= 0x7f;
+    }
+    else
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR1H = (u8)(motor1 >> 8); //设置占空比时间
+        PWM2_CCR1L = (u8)(motor1);
+        PWM2_CCR2H = 0; //设置占空比时间
+        PWM2_CCR2L = 0;
+        P_SW2 &= 0x7f;
+    }
+    if (motor2 < 0)
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR3H = 0; //设置占空比时间
+        PWM2_CCR3L = 0;
+        PWM2_CCR4H = (u8)(-motor1 >> 8); //设置占空比时间
+        PWM2_CCR4L = (u8)(-motor1);
+        P_SW2 &= 0x7f;
+    }
+    else
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR3H = (u8)(motor1 >> 8); //设置占空比时间
+        PWM2_CCR3L = (u8)(motor1);
+        PWM2_CCR4H = 0; //设置占空比时间
+        PWM2_CCR4L = 0;
+        P_SW2 &= 0x7f;
+    }
 }
 #elif defined USEDRV8701
 void MotorCtrl(int16_t motor1, int16_t motor2)
 {
-  if (motor1 < 0)
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR1H = (u8)(-motor1 >> 8); //设置占空比时间
-    PWM2_CCR1L = (u8)(-motor1);
-    P75 = 1;
+    if (motor1 < 0)
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR1H = (u8)(-motor1 >> 8); //设置占空比时间
+        PWM2_CCR1L = (u8)(-motor1);
+        P75 = 1;
 
-    P_SW2 &= 0x7f;
-  }
-  else
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR1H = (u8)(motor1 >> 8); //设置占空比时间
-    PWM2_CCR1L = (u8)(motor1);
-    P75 = 0;
-    P_SW2 &= 0x7f;
-  }
-  if (motor2 < 0)
-  {
-    //P_SW2 |= 0x80;
-    PWM2_CCR3H = (u8)(-motor1 >> 8); //设置占空比时间
-    PWM2_CCR3L = (u8)(-motor1);
-    P77 = 1;
-    P_SW2 &= 0x7f;
-  }
-  else
-  {
-    P_SW2 |= 0x80;
-    PWM2_CCR3H = (u8)(motor1 >> 8); //设置占空比时间
-    PWM2_CCR3L = (u8)(motor1);
-    P77 = 0;
-    P_SW2 &= 0x7f;
-  }
+        P_SW2 &= 0x7f;
+    }
+    else
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR1H = (u8)(motor1 >> 8); //设置占空比时间
+        PWM2_CCR1L = (u8)(motor1);
+        P75 = 0;
+        P_SW2 &= 0x7f;
+    }
+    if (motor2 < 0)
+    {
+        //P_SW2 |= 0x80;
+        PWM2_CCR3H = (u8)(-motor1 >> 8); //设置占空比时间
+        PWM2_CCR3L = (u8)(-motor1);
+        P77 = 1;
+        P_SW2 &= 0x7f;
+    }
+    else
+    {
+        P_SW2 |= 0x80;
+        PWM2_CCR3H = (u8)(motor1 >> 8); //设置占空比时间
+        PWM2_CCR3L = (u8)(motor1);
+        P77 = 0;
+        P_SW2 &= 0x7f;
+    }
 }
 #endif
 /*************************************************************************
@@ -277,38 +277,38 @@ void MotorCtrl(int16_t motor1, int16_t motor2)
  *************************************************************************/
 void TestMotor(void)
 {
-  short duty = 20;
-  char txt[16];
-  OLED_Init();
-  OLED_CLS(); //清屏
-  OLED_P6x8Str(2, 0, "LQ Motor Test");
-  MotorInit(MOTOR_FREQUENCY);
-  while (1)
-  {
-    if (KEY_Read(KEY0) == 0) //按下KEY0键，占空比减小
+    short duty = 20;
+    char txt[16];
+    OLED_Init();
+    OLED_CLS(); //清屏
+    OLED_P6x8Str(2, 0, "LQ Motor Test");
+    MotorInit(MOTOR_FREQUENCY);
+    while (1)
     {
-      if (duty > -PWM2_CLOCK / MOTOR_FREQUENCY) //满占空比为10M/12.5k=800
-        duty -= 50;
-    }
-    if (KEY_Read(KEY2) == 0) //按下KEY2键，占空比加大
-    {
-      if (duty < PWM2_CLOCK / MOTOR_FREQUENCY) //满占空比为10M/12.5k=800
-        duty += 50;
-    }
-    if (KEY_Read(KEY1) == 0) //按下KEY1键，占空比中值
-    {
-      duty = 20;
-    }
+        if (KEY_Read(KEY0) == 0) //按下KEY0键，占空比减小
+        {
+            if (duty > -PWM2_CLOCK / MOTOR_FREQUENCY) //满占空比为10M/12.5k=800
+                duty -= 50;
+        }
+        if (KEY_Read(KEY2) == 0) //按下KEY2键，占空比加大
+        {
+            if (duty < PWM2_CLOCK / MOTOR_FREQUENCY) //满占空比为10M/12.5k=800
+                duty += 50;
+        }
+        if (KEY_Read(KEY1) == 0) //按下KEY1键，占空比中值
+        {
+            duty = 20;
+        }
 
-    MotorCtrl(duty, 0);
+        MotorCtrl(duty, 0);
 
-    sprintf(txt, "PWM: %05d;", duty);
-    OLED_P6x8Str(0, 5, txt); //字符串显示
-    UART1_PutStr(txt);
+        sprintf(txt, "PWM: %05d;", duty);
+        OLED_P6x8Str(0, 5, txt); //字符串显示
+        UART1_PutStr(txt);
 
-    LED_Ctrl(LED0, RVS); //电平翻转,LED闪烁
-    delayms(200);        //延时等待
-  }
+        LED_Ctrl(LED0, RVS); //电平翻转,LED闪烁
+        delayms(200);        //延时等待
+    }
 }
 
 /*************************************************************************
@@ -321,25 +321,25 @@ void TestMotor(void)
  *************************************************************************/
 void ServoInit(u16 freq)
 {
-  P_SW2 |= 0x80;
-  //PWM1_PSCRL = 16;   //分频范围  fcn_cnt=fck_psc/(PSCR[15:0]+1)
-  PWM1_PSCRL = MAIN_Fosc / PWM1_CLOCK - 1; //主频为30M,PWM分频到1M范围
-  PWM1_CCER2 = 0x00;                       //写 CCMRx 前必须先清零 CCxE 关闭通道
-  PWM1_CCMR4 = 0x60;                       //设置 PWM4 模式1 输出
-  PWM1_CCER2 = 0x55;                       //使能 CC4E 通道
+    P_SW2 |= 0x80;
+    //PWM1_PSCRL = 16;   //分频范围  fcn_cnt=fck_psc/(PSCR[15:0]+1)
+    PWM1_PSCRL = MAIN_Fosc / PWM1_CLOCK - 1; //主频为30M,PWM分频到1M范围
+    PWM1_CCER2 = 0x00;                       //写 CCMRx 前必须先清零 CCxE 关闭通道
+    PWM1_CCMR4 = 0x60;                       //设置 PWM4 模式1 输出
+    PWM1_CCER2 = 0x55;                       //使能 CC4E 通道
 
-  PWM1_ARRH = (u8)((PWM1_CLOCK / freq) >> 8); //设置周期时间，从0计数到设定数值
-  PWM1_ARRL = (u8)(PWM1_CLOCK / freq);        //
+    PWM1_ARRH = (u8)((PWM1_CLOCK / freq) >> 8); //设置周期时间，从0计数到设定数值
+    PWM1_ARRL = (u8)(PWM1_CLOCK / freq);        //
 
-  PWM1_CCR4H = (u8)((Servo_Center) >> 8); //舵机中值
-  PWM1_CCR4L = (u8)(Servo_Center);        //
+    PWM1_CCR4H = (u8)((Servo_Center) >> 8); //舵机中值
+    PWM1_CCR4L = (u8)(Servo_Center);        //
 
-  PWM1_ENO |= 0x80; //使能 PWM4N 输出
-  PWM1_PS |= 0x00;  //高级 PWM 通道 4N 输出脚选择位, 0x00:P1.7, 0x40:P2.7, 0x80:P6.7, 0xC0:P3.3
+    PWM1_ENO |= 0x80; //使能 PWM4N 输出
+    PWM1_PS |= 0x00;  //高级 PWM 通道 4N 输出脚选择位, 0x00:P1.7, 0x40:P2.7, 0x80:P6.7, 0xC0:P3.3
 
-  PWM1_BKR = 0x80;  //使能主输出
-  PWM1_CR1 |= 0x01; //开始计时
-  P_SW2 &= 0x7f;
+    PWM1_BKR = 0x80;  //使能主输出
+    PWM1_CR1 |= 0x01; //开始计时
+    P_SW2 &= 0x7f;
 }
 
 /*************************************************************************
@@ -352,16 +352,16 @@ void ServoInit(u16 freq)
  *************************************************************************/
 void ServoCtrl(uint16_t pwm_value)
 {
-  /*
+    /*
     if (duty >= Servo_Left_Max)                  //限制幅值
         duty = Servo_Left_Max;
     else if (duty <= Servo_Right_Min)            //限制幅值
         duty = Servo_Right_Min;
 	*/
-  P_SW2 |= 0x80;
-  PWM1_CCR4H = (u8)(pwm_value >> 8); //设置占空比时间
-  PWM1_CCR4L = (u8)(pwm_value);
-  P_SW2 &= 0x7f;
+    P_SW2 |= 0x80;
+    PWM1_CCR4H = (u8)(pwm_value >> 8); //设置占空比时间
+    PWM1_CCR4L = (u8)(pwm_value);
+    P_SW2 &= 0x7f;
 }
 
 /*************************************************************************
@@ -382,36 +382,36 @@ void ServoCtrl(uint16_t pwm_value)
  *************************************************************************/
 void TestServo(void)
 {
-  char txt[16] = "X:";
-  u16 duty = Servo_Center;
+    char txt[16] = "X:";
+    u16 duty = Servo_Center;
 
-  OLED_CLS(); //清屏
-  OLED_P6x8Str(2, 0, "LQ Servo Test");
-  ServoInit(100);
-  ServoCtrl(Servo_Center); //舵机中值
-  while (1)
-  {
-    if (!KEY_Read(KEY0))
+    OLED_CLS(); //清屏
+    OLED_P6x8Str(2, 0, "LQ Servo Test");
+    ServoInit(100);
+    ServoCtrl(Servo_Center); //舵机中值
+    while (1)
     {
-      if (duty > 100) //防止duty超
-      {
-        duty -= 50; //标定的时候，可以把步长改小点，比如10
-      }
+        if (!KEY_Read(KEY0))
+        {
+            if (duty > 100) //防止duty超
+            {
+                duty -= 50; //标定的时候，可以把步长改小点，比如10
+            }
+        }
+        if (!KEY_Read(KEY1))
+        {
+            duty = Servo_Center;
+        }
+        if (!KEY_Read(KEY2))
+        {
+            duty += 50;
+        }
+        ServoCtrl(duty);
+        sprintf(txt, "Servo:%05d ", duty);
+        OLED_P6x8Str(1, 2, txt); //显示
+        LED_Ctrl(LED0, RVS);     //四个LED同时闪烁;
+        delayms(100);
     }
-    if (!KEY_Read(KEY1))
-    {
-      duty = Servo_Center;
-    }
-    if (!KEY_Read(KEY2))
-    {
-      duty += 50;
-    }
-    ServoCtrl(duty);
-    sprintf(txt, "Servo:%05d ", duty);
-    OLED_P6x8Str(1, 2, txt); //显示
-    LED_Ctrl(LED0, RVS);     //四个LED同时闪烁;
-    delayms(100);
-  }
 }
 
 //

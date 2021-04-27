@@ -11,25 +11,25 @@
 *************************************************************************/
 void Soft_SPI_ReadWriteNbyte(u8 *lqbuff, u16 len)
 {
-  u8 i;
+    u8 i;
 
-  SPI_CS_OUT = 0;
-  SPI_SCK_OUT = 1;
-  do
-  {
-    for (i = 0; i < 8; i++)
+    SPI_CS_OUT = 0;
+    SPI_SCK_OUT = 1;
+    do
     {
-      SPI_MOSI_OUT = ((*lqbuff) >= 0x80);
-      SPI_SCK_OUT = 0;
-      (*lqbuff) = (*lqbuff) << 1;
+        for (i = 0; i < 8; i++)
+        {
+            SPI_MOSI_OUT = ((*lqbuff) >= 0x80);
+            SPI_SCK_OUT = 0;
+            (*lqbuff) = (*lqbuff) << 1;
 
-      SPI_SCK_OUT = 1;
+            SPI_SCK_OUT = 1;
 
-      (*lqbuff) |= SPI_MISO_IN;
-    }
-    lqbuff++;
-  } while (--len);
-  SPI_CS_OUT = 1;
+            (*lqbuff) |= SPI_MISO_IN;
+        }
+        lqbuff++;
+    } while (--len);
+    SPI_CS_OUT = 1;
 }
 
 /*************************************************************************
@@ -42,9 +42,9 @@ void Soft_SPI_ReadWriteNbyte(u8 *lqbuff, u16 len)
 *************************************************************************/
 void Soft_SPI_Init(void)
 {
-  P2M1 = 0;
-  P2M0 = 0;    //设置为准双向口
-  P2PU = 0x3C; //上拉
+    P2M1 = 0;
+    P2M0 = 0;    //设置为准双向口
+    P2PU = 0x3C; //上拉
 }
 
 //

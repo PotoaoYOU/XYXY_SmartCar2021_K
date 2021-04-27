@@ -36,13 +36,13 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 *************************************************************************/
 void iic_delay()
 {
-	/* 200MHz 系统时钟下 模拟IIC速度为 400Khz */
+    /* 200MHz 系统时钟下 模拟IIC速度为 400Khz */
 
-	unsigned char i = 0;
-	for (i = 0; i < 30; i++) //修改这里可以调整IIC速率
-	{
-		; /* delay */
-	}
+    unsigned char i = 0;
+    for (i = 0; i < 30; i++) //修改这里可以调整IIC速率
+    {
+        ; /* delay */
+    }
 }
 
 /*************************************************************************
@@ -55,10 +55,10 @@ void iic_delay()
 *************************************************************************/
 void IIC_Init(void)
 {
-	IIC_SCL_INIT;
-	IIC_SDA_INIT;
-	IIC_SCL_H;
-	IIC_SDA_H;
+    IIC_SCL_INIT;
+    IIC_SDA_INIT;
+    IIC_SCL_H;
+    IIC_SDA_H;
 }
 
 /*************************************************************************
@@ -71,19 +71,19 @@ void IIC_Init(void)
 *************************************************************************/
 void IIC_Start(void)
 {
-	SDA_OUT; //sda线输出
-	IIC_SDA_H;
-	IIC_SCL_H;
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SDA_L; //START:when CLK is high,DATA change form high to low
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SCL_L; //钳住I2C总线，准备发送或接收数据
+    SDA_OUT; //sda线输出
+    IIC_SDA_H;
+    IIC_SCL_H;
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SDA_L; //START:when CLK is high,DATA change form high to low
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SCL_L; //钳住I2C总线，准备发送或接收数据
 }
 
 /*************************************************************************
@@ -96,18 +96,18 @@ void IIC_Start(void)
 *************************************************************************/
 void IIC_Stop(void)
 {
-	SDA_OUT; //sda线输出
-	IIC_SCL_L;
-	IIC_SDA_L; //STOP:when CLK is high DATA change form low to high
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SCL_H;
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SDA_H; //发送I2C总线结束信号
-	iic_delay();
+    SDA_OUT; //sda线输出
+    IIC_SCL_L;
+    IIC_SDA_L; //STOP:when CLK is high DATA change form low to high
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SCL_H;
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SDA_H; //发送I2C总线结束信号
+    iic_delay();
 }
 
 /*************************************************************************
@@ -120,23 +120,23 @@ void IIC_Stop(void)
 *************************************************************************/
 unsigned char IIC_WaitAck(void)
 {
-	unsigned char ucErrTime = 0;
-	SDA_IN; //SDA设置为输入  （从机给一个低电平做为应答）
-	IIC_SDA_H;
-	iic_delay();
-	IIC_SCL_H;
-	iic_delay();
-	while (IIC_SDA_READ)
-	{
-		ucErrTime++;
-		if (ucErrTime > 100)
-		{
-			IIC_Stop();
-			return 1;
-		}
-	}
-	IIC_SCL_L; //时钟输出0
-	return 0;
+    unsigned char ucErrTime = 0;
+    SDA_IN; //SDA设置为输入  （从机给一个低电平做为应答）
+    IIC_SDA_H;
+    iic_delay();
+    IIC_SCL_H;
+    iic_delay();
+    while (IIC_SDA_READ)
+    {
+        ucErrTime++;
+        if (ucErrTime > 100)
+        {
+            IIC_Stop();
+            return 1;
+        }
+    }
+    IIC_SCL_L; //时钟输出0
+    return 0;
 }
 
 /*************************************************************************
@@ -149,17 +149,17 @@ unsigned char IIC_WaitAck(void)
 *************************************************************************/
 void IIC_Ack(void)
 {
-	IIC_SCL_L;
-	SDA_OUT;
-	IIC_SDA_L;
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SCL_H;
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SCL_L;
+    IIC_SCL_L;
+    SDA_OUT;
+    IIC_SDA_L;
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SCL_H;
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SCL_L;
 }
 
 /*************************************************************************
@@ -172,17 +172,17 @@ void IIC_Ack(void)
 *************************************************************************/
 void IIC_NAck(void)
 {
-	IIC_SCL_L;
-	SDA_OUT;
-	IIC_SDA_H;
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SCL_H;
-	iic_delay();
-	iic_delay();
-	iic_delay();
-	IIC_SCL_L;
+    IIC_SCL_L;
+    SDA_OUT;
+    IIC_SDA_H;
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SCL_H;
+    iic_delay();
+    iic_delay();
+    iic_delay();
+    IIC_SCL_L;
 }
 
 /*************************************************************************
@@ -195,31 +195,31 @@ void IIC_NAck(void)
 *************************************************************************/
 void IIC_SendByte(unsigned char data_t)
 {
-	unsigned char t;
-	SDA_OUT;
-	IIC_SCL_L; //拉低时钟开始数据传输
-	for (t = 0; t < 8; t++)
-	{
-		//        IIC_SDA_READ = data_t&0x80;
-		if (data_t & 0x80)
-		{
-			IIC_SDA_H;
-		}
-		else
-		{
-			IIC_SDA_L;
-		}
+    unsigned char t;
+    SDA_OUT;
+    IIC_SCL_L; //拉低时钟开始数据传输
+    for (t = 0; t < 8; t++)
+    {
+        //        IIC_SDA_READ = data_t&0x80;
+        if (data_t & 0x80)
+        {
+            IIC_SDA_H;
+        }
+        else
+        {
+            IIC_SDA_L;
+        }
 
-		IIC_SCL_H;
-		;
-		iic_delay();
-		data_t <<= 1;
-		iic_delay();
-		iic_delay();
-		IIC_SCL_L;
-		iic_delay();
-	}
-	iic_delay();
+        IIC_SCL_H;
+        ;
+        iic_delay();
+        data_t <<= 1;
+        iic_delay();
+        iic_delay();
+        IIC_SCL_L;
+        iic_delay();
+    }
+    iic_delay();
 }
 
 /*************************************************************************
@@ -232,25 +232,25 @@ void IIC_SendByte(unsigned char data_t)
 *************************************************************************/
 unsigned char IIC_ReadByte(unsigned char ack)
 {
-	unsigned char i, receive = 0;
-	SDA_IN; //SDA设置为输入模式 等待接收从机返回数据
-	for (i = 0; i < 8; i++)
-	{
-		IIC_SCL_L;
-		iic_delay();
-		iic_delay();
-		iic_delay();
-		IIC_SCL_H;
-		receive <<= 1;
-		if (IIC_SDA_READ)
-			receive++; //从机发送的电平
-		iic_delay();
-	}
-	if (ack)
-		IIC_Ack(); //发送ACK
-	else
-		IIC_NAck(); //发送nACK
-	return receive;
+    unsigned char i, receive = 0;
+    SDA_IN; //SDA设置为输入模式 等待接收从机返回数据
+    for (i = 0; i < 8; i++)
+    {
+        IIC_SCL_L;
+        iic_delay();
+        iic_delay();
+        iic_delay();
+        IIC_SCL_H;
+        receive <<= 1;
+        if (IIC_SDA_READ)
+            receive++; //从机发送的电平
+        iic_delay();
+    }
+    if (ack)
+        IIC_Ack(); //发送ACK
+    else
+        IIC_NAck(); //发送nACK
+    return receive;
 }
 
 /*************************************************************************
@@ -266,23 +266,23 @@ unsigned char IIC_ReadByte(unsigned char ack)
 *************************************************************************/
 unsigned char IIC_ReadByteFromSlave(unsigned char I2C_Addr, unsigned char reg, unsigned char *buf)
 {
-	IIC_Start();
-	IIC_SendByte(I2C_Addr); //发送从机地址
-	if (IIC_WaitAck())		//如果从机未应答则数据发送失败
-	{
-		IIC_Stop();
-		return 1;
-	}
-	IIC_SendByte(reg); //发送寄存器地址
-	IIC_WaitAck();
+    IIC_Start();
+    IIC_SendByte(I2C_Addr); //发送从机地址
+    if (IIC_WaitAck())      //如果从机未应答则数据发送失败
+    {
+        IIC_Stop();
+        return 1;
+    }
+    IIC_SendByte(reg); //发送寄存器地址
+    IIC_WaitAck();
 
-	IIC_Start();
-	I2C_Addr++;
-	IIC_SendByte(I2C_Addr); //进入接收模式
-	IIC_WaitAck();
-	*buf = IIC_ReadByte(0);
-	IIC_Stop(); //产生一个停止条件
-	return 0;
+    IIC_Start();
+    I2C_Addr++;
+    IIC_SendByte(I2C_Addr); //进入接收模式
+    IIC_WaitAck();
+    *buf = IIC_ReadByte(0);
+    IIC_Stop(); //产生一个停止条件
+    return 0;
 }
 
 /*************************************************************************
@@ -298,25 +298,25 @@ unsigned char IIC_ReadByteFromSlave(unsigned char I2C_Addr, unsigned char reg, u
 *************************************************************************/
 unsigned char IIC_WriteByteToSlave(unsigned char I2C_Addr, unsigned char reg, unsigned char data_t)
 {
-	IIC_Start();
-	IIC_SendByte(I2C_Addr); //发送从机地址
-	if (IIC_WaitAck())
-	{
-		IIC_Stop();
-		return 1; //从机地址写入失败
-	}
-	IIC_SendByte(reg); //发送寄存器地址
-	IIC_WaitAck();
-	IIC_SendByte(data_t);
-	if (IIC_WaitAck())
-	{
-		IIC_Stop();
-		return 1; //数据写入失败
-	}
-	IIC_Stop(); //产生一个停止条件
+    IIC_Start();
+    IIC_SendByte(I2C_Addr); //发送从机地址
+    if (IIC_WaitAck())
+    {
+        IIC_Stop();
+        return 1; //从机地址写入失败
+    }
+    IIC_SendByte(reg); //发送寄存器地址
+    IIC_WaitAck();
+    IIC_SendByte(data_t);
+    if (IIC_WaitAck())
+    {
+        IIC_Stop();
+        return 1; //数据写入失败
+    }
+    IIC_Stop(); //产生一个停止条件
 
-	//return 1; //status == 0;
-	return 0;
+    //return 1; //status == 0;
+    return 0;
 }
 
 /*************************************************************************
@@ -333,33 +333,33 @@ unsigned char IIC_WriteByteToSlave(unsigned char I2C_Addr, unsigned char reg, un
 *************************************************************************/
 unsigned char IIC_ReadMultByteFromSlave(unsigned char dev, unsigned char reg, unsigned char length, unsigned char *data_t)
 {
-	unsigned char count = 0;
-	unsigned char temp;
-	IIC_Start();
-	IIC_SendByte(dev); //发送从机地址
-	if (IIC_WaitAck())
-	{
-		IIC_Stop();
-		return 1; //从机地址写入失败
-	}
-	IIC_SendByte(reg); //发送寄存器地址
-	IIC_WaitAck();
-	IIC_Start();
-	dev++;
-	IIC_SendByte(dev); //进入接收模式
-	IIC_WaitAck();
-	for (count = 0; count < length; count++)
-	{
-		if (count != (length - 1))
-			temp = IIC_ReadByte(1); //带ACK的读数据
-		else
-			temp = IIC_ReadByte(0); //最后一个字节NACK
+    unsigned char count = 0;
+    unsigned char temp;
+    IIC_Start();
+    IIC_SendByte(dev); //发送从机地址
+    if (IIC_WaitAck())
+    {
+        IIC_Stop();
+        return 1; //从机地址写入失败
+    }
+    IIC_SendByte(reg); //发送寄存器地址
+    IIC_WaitAck();
+    IIC_Start();
+    dev++;
+    IIC_SendByte(dev); //进入接收模式
+    IIC_WaitAck();
+    for (count = 0; count < length; count++)
+    {
+        if (count != (length - 1))
+            temp = IIC_ReadByte(1); //带ACK的读数据
+        else
+            temp = IIC_ReadByte(0); //最后一个字节NACK
 
-		data_t[count] = temp;
-	}
-	IIC_Stop(); //产生一个停止条件
-	//return count;
-	return 0;
+        data_t[count] = temp;
+    }
+    IIC_Stop(); //产生一个停止条件
+    //return count;
+    return 0;
 }
 
 /*************************************************************************
@@ -377,26 +377,26 @@ unsigned char IIC_ReadMultByteFromSlave(unsigned char dev, unsigned char reg, un
 unsigned char IIC_WriteMultByteToSlave(unsigned char dev, unsigned char reg, unsigned char length, unsigned char *data_t)
 {
 
-	unsigned char count = 0;
-	IIC_Start();
-	IIC_SendByte(dev); //发送从机地址
-	if (IIC_WaitAck())
-	{
-		IIC_Stop();
-		return 1; //从机地址写入失败
-	}
-	IIC_SendByte(reg); //发送寄存器地址
-	IIC_WaitAck();
-	for (count = 0; count < length; count++)
-	{
-		IIC_SendByte(data_t[count]);
-		if (IIC_WaitAck()) //每一个字节都要等从机应答
-		{
-			IIC_Stop();
-			return 1; //数据写入失败
-		}
-	}
-	IIC_Stop(); //产生一个停止条件
+    unsigned char count = 0;
+    IIC_Start();
+    IIC_SendByte(dev); //发送从机地址
+    if (IIC_WaitAck())
+    {
+        IIC_Stop();
+        return 1; //从机地址写入失败
+    }
+    IIC_SendByte(reg); //发送寄存器地址
+    IIC_WaitAck();
+    for (count = 0; count < length; count++)
+    {
+        IIC_SendByte(data_t[count]);
+        if (IIC_WaitAck()) //每一个字节都要等从机应答
+        {
+            IIC_Stop();
+            return 1; //数据写入失败
+        }
+    }
+    IIC_Stop(); //产生一个停止条件
 
-	return 0;
+    return 0;
 }

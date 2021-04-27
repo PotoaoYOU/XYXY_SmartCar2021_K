@@ -5,9 +5,9 @@
 //#define USE_ICM20689
 #define USE_ICM42605
 
-#define ICM20689_ADDR 0x68	//IIC写入时的地址字节数据，+1为读取
+#define ICM20689_ADDR 0x68  //IIC写入时的地址字节数据，+1为读取
 #define ICM20689_ADDR2 0x69 //取决于AD0的状态
-#define ICM20689_ID 0x98	//IIC地址寄存器(默认数值0x98，只读)
+#define ICM20689_ID 0x98    //IIC地址寄存器(默认数值0x98，只读)
 #define ICM42605_ID 0x42
 #define WHO_AM_I 0X75 //器件ID寄存器
 
@@ -143,8 +143,8 @@
 
 typedef struct
 {
-	int16_t Sample_accdata[3 * fifo_packet_num];
-	int16_t Sample_gyrdata[3 * fifo_packet_num];
+    int16_t Sample_accdata[3 * fifo_packet_num];
+    int16_t Sample_gyrdata[3 * fifo_packet_num];
 } Sample_data_type_t;
 
 void ICM_Get_Gyroscope(short *gx, short *gy, short *gz);
