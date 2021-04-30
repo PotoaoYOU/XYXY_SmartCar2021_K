@@ -166,19 +166,19 @@ void UART4_config(u16 tmr) // 选择波特率, 2: 使用Timer2做波特率, 其它值: 使用Tim
 {
     if (tmr == 2)
     {
-        SetTimer2Baudraye(65536UL - (MAIN_Fosc / 4) / Baudrate4);
+        SetTimer2Baudraye(Baudrate4);
         S4CON = 0x10; //8位数据, 使用Timer2做波特率发生器, 允许接收
     }
     else
     {
         S4CON = 0x50; //8位数据, 使用Timer4做波特率发生器, 允许接收
-        T4H = (65536UL - (MAIN_Fosc / 4) / Baudrate4) / 256;
-        T4L = (65536UL - (MAIN_Fosc / 4) / Baudrate4) % 256;
-        T4T3M = 0xa0;
+        T4H = (Baudrate4) / 256;
+        T4L = (Baudrate4) % 256;
+        T4T3M = 0xA0;
     }
-    IE2 |= 0x10;    //允许UART4中断
-    P_SW2 &= ~0x04; //UART4 switch bit2 to: 0: P0.2 P0.3
-                    //    P_SW2 |= 0x04;                                           //UART4 switch bit2 to: 1: P5.2 P5.3
+    IE2 |= 0x10; //允许UART4中断
+    // P_SW2 &= ~0x04;                                            	//UART4 switch bit2 to: 0: P0.2 P0.3
+    P_SW2 |= 0x04; //UART4 switch bit2 to: 1: P5.2 P5.3
 }
 /*************************************************************************
 *  函数名称：void UART_PutChar(UART_t  uratn, char ch)
@@ -216,6 +216,7 @@ void UART4_PutStr(char *st)
     while (*st)
     {
         UART4_PutChar(*st++);
+        delayms(1);
     }
 }
 /*************************************************************************
