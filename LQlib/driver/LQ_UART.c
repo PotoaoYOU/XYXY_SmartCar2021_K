@@ -257,22 +257,22 @@ char UART4_GetChar(void)
     return (S4BUF);
 }
 
-void UART1_PutCmdBuff(char *buff, char buff_size)
+void UART4_PutCmdBuff(char *buff, char buff_size)
 {
     char i = 0;
     for (i = 0; i < buff_size; i++)
     {
-        UART1_PutChar(*(buff + i));
+        UART4_PutChar(*(buff + i));
     }
 }
 
-void UART1_PutDataBuff(char *buff, char buff_size)
+void UART4_PutDataBuff(char *buff, char buff_size)
 {
     char i = 0;
     for (i = 0; i < buff_size / 2; i++)
     {
-        UART1_PutChar(*(buff + 2 * i + 1));
-        UART1_PutChar(*(buff + 2 * i));
+        UART4_PutChar(*(buff + 2 * i + 1));
+        UART4_PutChar(*(buff + 2 * i));
     }
 }
 
@@ -282,9 +282,9 @@ void vcan_sendware(char *wareaddr, char waresize)
     char cmdf[2] = {0x03, 0xfc}; //串口调试 使用的前命令
     char cmdr[2] = {0xfc, 0x03}; //串口调试 使用的后命令
 
-    UART1_PutCmdBuff(cmdf, sizeof(cmdf));  //先发送前命令
-    UART1_PutDataBuff(wareaddr, waresize); //发送数据
-    UART1_PutCmdBuff(cmdr, sizeof(cmdr));  //发送后命令
+    UART4_PutCmdBuff(cmdf, sizeof(cmdf));  //先发送前命令
+    UART4_PutDataBuff(wareaddr, waresize); //发送数据
+    UART4_PutCmdBuff(cmdr, sizeof(cmdr));  //发送后命令
 }
 
 //
