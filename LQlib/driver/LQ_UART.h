@@ -21,6 +21,7 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 
 void UART1_config(u16 tmr);
 void UART1_PutChar(char ch);
+char putchar(char c);
 void UART1_PutStr(char *str);
 char UART1_GetChar(void);
 
@@ -28,5 +29,6 @@ void UART4_config(u16 tmr);
 void UART4_PutChar(char ch);
 void UART4_PutStr(char *str);
 char UART4_GetChar(void);
+void vcan_sendware(char *wareaddr, char waresize);
 
 #endif

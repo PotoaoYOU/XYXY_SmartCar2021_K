@@ -25,28 +25,27 @@ void main(void)
     sysinit();
     UART1_config(1); //调试
     UART1_PutStr("uart1...\n\r");
-    UART4_config(2); //蓝牙遥控
-    UART4_PutStr("uart1...\n\r");
-    OLED_Init();                                               //OLED初始化
-    OLED_CLS();                                                //清屏
-    OLED_P14x16Str(0, 2, (unsigned char *)"北京龙邱智能科技"); //字符串显示
-    OLED_P6x8Str(0, 4, "Long Qiu i.s.t.");                     //字符串显示
-    //delayms(500);
-    //OLED_CLS();   							//清屏
-    GPIO_LED_Init(); //LED初始化
-    GPIO_KEY_Init(); //按键初始化
-                     //Timer0_init(); 						//200hz--->  5ms,平衡车程序里面开启使用，请勿冲突
-                     //Timer1_init(); 						//1000hz--->  1ms,//UART1用
-                     //Timer2_init(); 						//100hz---> 10ms，//UART4用
-                     //Timer3_init();            //编码器用 四轮编码器
-                     //Timer4_init();            //编码器用 单车/四轮编码器
 
-    Test_ICM20689(); //测试陀螺仪
+    if (ICM20689_Init())
+        UART1_PutStr("ICM20689 INIT FAIL!!!\n\r");
+    else
+        UART1_PutStr("ICM20689 INIT SUCCESS\n\r");
 
     while (1)
     {
-        LED_Ctrl(LED0, RVS); //LED闪烁;
-        delayms(100);
+        short data aacx, aacy, aacz;    //加速度传感器原始数据
+        short data gyrox, gyroy, gyroz; //陀螺仪原始数据
+        short data icm_raw_data[2] = {0};
+
+        ICM_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
+        icm_raw_data[0] = aacx;
+        icm_raw_data[1] = gyroy;
+
+        // printf("angle:%f, aacx:%d\n\r", atan2((float)aacz, (float)aacx) * 180.0 / PI, aacx); //反正切加速度计得到角度值
+
+        vcan_sendware((char *)icm_raw_data, sizeof(icm_raw_data));
+
+        delayms(10);
     }
 }
 

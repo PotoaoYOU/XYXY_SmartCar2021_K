@@ -137,7 +137,7 @@ void UART1_config(u16 tmr)
     if (tmr == 2)
     {
         AUXR |= 0x01; //S1 tmr Use Timer2;
-        SetTimer2Baudraye(65536UL - (MAIN_Fosc / 4) / Baudrate1);
+        SetTimer2Baudraye(Baudrate1);
     }
     /*********** 波特率使用定时器1 *****************/
     else
@@ -147,8 +147,8 @@ void UART1_config(u16 tmr)
         AUXR |= (1 << 6);  //Timer1 set as 1T mode
         TMOD &= ~(1 << 6); //Timer1 set As Timer
         TMOD &= ~0x30;     //Timer1_16bitAutoReload;
-        TH1 = (u8)((65536UL - (MAIN_Fosc / 4) / Baudrate1) / 256);
-        TL1 = (u8)((65536UL - (MAIN_Fosc / 4) / Baudrate1) % 256);
+        TH1 = (u8)((Baudrate1) / 256);
+        TL1 = (u8)((Baudrate1) % 256);
         ET1 = 0;          //禁止中断
         INTCLKO &= ~0x02; //不输出时钟
         TR1 = 1;
@@ -160,7 +160,7 @@ void UART1_config(u16 tmr)
     ES = 1;                      //允许中断
     REN = 1;                     //允许接收
     P_SW1 &= 0x3f;
-    //  P_SW1 |= 0x00;                                            //UART1 switch to, 0x00: P3.0 P3.1, 0x40: P3.6 P3.7, 0x80: P1.6 P1.7, 0xC0: P4.3 P4.4
+    P_SW1 |= 0x00; //UART1 switch to, 0x00: P3.0 P3.1, 0x40: P3.6 P3.7, 0x80: P1.6 P1.7, 0xC0: P4.3 P4.4
 }
 void UART4_config(u16 tmr) // 选择波特率, 2: 使用Timer2做波特率, 其它值: 使用Timer4做波特率.
 {
@@ -180,6 +180,19 @@ void UART4_config(u16 tmr) // 选择波特率, 2: 使用Timer2做波特率, 其它值: 使用Tim
     // P_SW2 &= ~0x04;                                            	//UART4 switch bit2 to: 0: P0.2 P0.3
     P_SW2 |= 0x04; //UART4 switch bit2 to: 1: P5.2 P5.3
 }
+
+void Uart_Delay()
+{
+    unsigned char i, j;
+
+    i = 3;
+    j = 35;
+    do
+    {
+        while (--j)
+            ;
+    } while (--i);
+}
 /*************************************************************************
 *  函数名称：void UART_PutChar(UART_t  uratn, char ch)
 *  功能说明：UART发送字节函数,使用前请先初始化对应串口
@@ -191,10 +204,19 @@ void UART4_config(u16 tmr) // 选择波特率, 2: 使用Timer2做波特率, 其它值: 使用Tim
 void UART1_PutChar(char ch)
 {
     SBUF = ch;
+    Uart_Delay();
 }
 void UART4_PutChar(char ch)
 {
     S4BUF = ch;
+    Uart_Delay();
+}
+
+//printf 函数支持
+char putchar(char c)
+{
+    SBUF = c;
+    Uart_Delay();
 }
 /*************************************************************************
 *  函数名称：void UART_PutStr(UART_t  uratn, char *st)
@@ -216,7 +238,6 @@ void UART4_PutStr(char *st)
     while (*st)
     {
         UART4_PutChar(*st++);
-        delayms(1);
     }
 }
 /*************************************************************************
@@ -234,6 +255,36 @@ char UART1_GetChar(void)
 char UART4_GetChar(void)
 {
     return (S4BUF);
+}
+
+void UART1_PutCmdBuff(char *buff, char buff_size)
+{
+    char i = 0;
+    for (i = 0; i < buff_size; i++)
+    {
+        UART1_PutChar(*(buff + i));
+    }
+}
+
+void UART1_PutDataBuff(char *buff, char buff_size)
+{
+    char i = 0;
+    for (i = 0; i < buff_size / 2; i++)
+    {
+        UART1_PutChar(*(buff + 2 * i + 1));
+        UART1_PutChar(*(buff + 2 * i));
+    }
+}
+
+// use: vcan_sendware((uint8_t *)var, sizeof(var));
+void vcan_sendware(char *wareaddr, char waresize)
+{
+    char cmdf[2] = {0x03, 0xfc}; //串口调试 使用的前命令
+    char cmdr[2] = {0xfc, 0x03}; //串口调试 使用的后命令
+
+    UART1_PutCmdBuff(cmdf, sizeof(cmdf));  //先发送前命令
+    UART1_PutDataBuff(wareaddr, waresize); //发送数据
+    UART1_PutCmdBuff(cmdr, sizeof(cmdr));  //发送后命令
 }
 
 //
