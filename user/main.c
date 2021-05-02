@@ -18,10 +18,10 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 
 #include "include.h"
 
-float data angle_c;      //数据融合后的角度
-float acc_ratio =5.6;   //加速度计比例
-float gyro_ratio = 7.6; //陀螺仪比例
-float delt_t = 0.01;     //采样周期
+float data angle_c;    //数据融合后的角度
+#define ACC_RATIO 5.6  //加速度计比例
+#define GYRO_RATIO 7.6 //陀螺仪比例
+#define DT 0.01        //采样周期
 
 void sysinit(void);
 
@@ -47,11 +47,11 @@ float angle_calc(float angle_m, float gyro_m)
         last_angle = angle_m;
     }
 
-    gyro_now = gyro_m * gyro_ratio;
+    gyro_now = gyro_m * GYRO_RATIO;
     //根据测量到的加速度值转换为角度之后与上次的角度值求偏差
-    error_angle = (angle_m - last_angle) * acc_ratio;
+    error_angle = (angle_m - last_angle) * ACC_RATIO;
     //根据偏差与陀螺仪测量得到的角度值计算当前角度值
-    temp_angle = last_angle + (error_angle + gyro_now) * delt_t;
+    temp_angle = last_angle + (error_angle + gyro_now) * DT;
     //保存当前角度值
     last_angle = temp_angle;
 
@@ -72,20 +72,20 @@ void main(void)
 
     while (1)
     {
-        short data aacx, aacy, aacz;    //加速度传感器原始数据
-        short data gyrox, gyroy, gyroz; //陀螺仪原始数据
-        short data icm_raw_data[3] = {0};
+        uint16_t data aacx, aacy, aacz;    //加速度传感器原始数据
+        uint16_t data gyrox, gyroy, gyroz; //陀螺仪原始数据
+        uint16_t data icm_raw_data[3] = {0};
 
         ICM_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
         gyroy = -gyroy;
         angle_c = angle_calc(aacx, gyroy);
         icm_raw_data[0] = aacx;
         icm_raw_data[1] = gyroy;
-        icm_raw_data[2] = (short)angle_c;
+        icm_raw_data[2] = (uint16_t)angle_c;
 
-        //printf("angle:%f, aacx:%d, angle:%f\n\r", atan2((float)aacz, (float)aacx) * 180.0 / PI, aacx, angle_c); //反正切加速度计得到角度值
+        // printf("angle:%f, aacx:%d, angle:%f\n\r", atan2((float)aacz, (float)aacx) * 180.0 / PI, aacx, angle_c); //反正切加速度计得到角度值
 
-        vcan_sendware((char *)icm_raw_data, sizeof(icm_raw_data));
+        vcan_sendware((uint8_t *)icm_raw_data, sizeof(icm_raw_data));
 
         delayms(10);
     }

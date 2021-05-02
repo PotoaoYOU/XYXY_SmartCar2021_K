@@ -69,31 +69,7 @@ void UART4_int(void) interrupt 18
 
         if (uart_receive == 'A')
         {
-            Flag_Add = 1, Flag_Dec = 0; //0x41--65
-            if (ForwardBackFlag < 500)
-                ForwardBackFlag += 50; //===加速
-        }
-        else if (uart_receive == 'D') //减速
-        {
-            Flag_Add = 0, Flag_Dec = 1; //0x45--69低速挡（默认值）
-            if (ForwardBackFlag > -1000)
-                ForwardBackFlag -= 50; //===减速
-        }
-        else if (uart_receive == 'L')
-            Flag_Left = 1, Flag_Right = 0; //左转向0x4C--76
-        else if (uart_receive == 'R')
-            Flag_Left = 0, Flag_Right = 1; //右转向0x52--82
-        else if (uart_receive == 'T')
-            Trace_BT = 0; //线阵CCD循迹
-        else if (uart_receive == 'B')
-            Trace_BT = 1; //蓝牙遥控
-        else if (uart_receive == 'P')
-        {
-            Flag_Left = 0, Flag_Right = 0; //停车
-            Flag_Add = 0, Flag_Dec = 0;
-            MotorCtrl(0, 0);         //用龙邱DRV8701或者BTN7971驱动板
-            ServoCtrl(Servo_Center); //舵机控制PWM 舵机范围：【0，10000】
-            Flag_Stop = 1;
+            
         }
     }
 
@@ -217,6 +193,7 @@ char putchar(char c)
 {
     SBUF = c;
     Uart_Delay();
+    return c;
 }
 /*************************************************************************
 *  函数名称：void UART_PutStr(UART_t  uratn, char *st)

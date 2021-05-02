@@ -28,12 +28,11 @@ void delayms(u16 ms)
 // 返回: none.
 // 版本: V1.0, 2015-1-12
 //========================================================================
-/*
-void timer0_int (void) interrupt 1
+void timer0_int(void) interrupt 1
 {
-  LED_Ctrl(LED0, RVS); //平衡车占用
+    LED_Ctrl(LED0, RVS); //平衡车占用
 }
-*/
+
 //========================================================================
 // 函数: void timer1_int (void) interrupt TIMER1_VECTOR
 // 描述: timer1中断函数.

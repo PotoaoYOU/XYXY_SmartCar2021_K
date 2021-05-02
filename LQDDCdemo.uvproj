@@ -518,28 +518,6 @@
         </Group>
         <Group>
           <GroupName>ddc</GroupName>
-          <Files>
-            <File>
-              <FileName>algorithm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LQlib\ddc\algorithm.c</FilePath>
-            </File>
-            <File>
-              <FileName>algorithm.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LQlib\ddc\algorithm.h</FilePath>
-            </File>
-            <File>
-              <FileName>balance.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\LQlib\ddc\balance.c</FilePath>
-            </File>
-            <File>
-              <FileName>balance.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\LQlib\ddc\balance.h</FilePath>
-            </File>
-          </Files>
         </Group>
       </Groups>
     </Target>
