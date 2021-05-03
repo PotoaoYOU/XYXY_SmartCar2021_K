@@ -30,6 +30,8 @@ void delayms(u16 ms)
 //========================================================================
 void timer0_int(void) interrupt 1
 {
+    refreshGyroscopeRawData(Car.gyroscope_data);
+    Car.aacx_with_mix = firstOrderComplementaryFilter(Car.gyroscope_data[aacx], Car.gyroscope_data[gyroy]);
     LED_Ctrl(LED0, RVS); //平衡车占用
 }
 

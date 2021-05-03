@@ -18,45 +18,10 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 
 #include "include.h"
 
-float data angle_c;    //数据融合后的角度
-#define ACC_RATIO 5.6  //加速度计比例
-#define GYRO_RATIO 7.6 //陀螺仪比例
-#define DT 0.01        //采样周期
+Car_Data data Car;
 
 void sysinit(void);
 
-//----------------------------------------------------------------
-//  @brief      一阶互补滤波
-//  @param      angle_m     加速度计数据
-//  @param      gyro_m      陀螺仪数据
-//  @return     float       数据融合后的角度
-//----------------------------------------------------------------
-
-float angle_calc(float angle_m, float gyro_m)
-{
-    float temp_angle;
-    float gyro_now;
-    float error_angle;
-    static float last_angle;
-    static uint8 first_angle;
-
-    if (!first_angle) //判断是否为第一次运行本函数
-    {
-        //如果是第一次运行，则将上次角度值设置为与加速度值一致
-        first_angle = 1;
-        last_angle = angle_m;
-    }
-
-    gyro_now = gyro_m * GYRO_RATIO;
-    //根据测量到的加速度值转换为角度之后与上次的角度值求偏差
-    error_angle = (angle_m - last_angle) * ACC_RATIO;
-    //根据偏差与陀螺仪测量得到的角度值计算当前角度值
-    temp_angle = last_angle + (error_angle + gyro_now) * DT;
-    //保存当前角度值
-    last_angle = temp_angle;
-
-    return temp_angle;
-}
 /******************** 主函数 **************************/
 void main(void)
 {
@@ -64,6 +29,7 @@ void main(void)
     UART1_config(1); //调试
     UART1_PutStr("uart1...\n\r");
     UART4_config(2);
+    Timer0_init();
 
     if (ICM20689_Init())
         UART1_PutStr("ICM20689 INIT FAIL!!!\n\r");
@@ -72,22 +38,16 @@ void main(void)
 
     while (1)
     {
-        uint16_t data aacx, aacy, aacz;    //加速度传感器原始数据
-        uint16_t data gyrox, gyroy, gyroz; //陀螺仪原始数据
-        uint16_t data icm_raw_data[3] = {0};
+        Car.uart_send_buffer[0] = Car.gyroscope_data[aacx];
+        Car.uart_send_buffer[1] = Car.gyroscope_data[gyroy];
+        Car.uart_send_buffer[2] = (int16_t)Car.aacx_with_mix;
 
-        ICM_Get_Raw_data(&aacx, &aacy, &aacz, &gyrox, &gyroy, &gyroz); //得到加速度传感器数据
-        gyroy = -gyroy;
-        angle_c = angle_calc(aacx, gyroy);
-        icm_raw_data[0] = aacx;
-        icm_raw_data[1] = gyroy;
-        icm_raw_data[2] = (uint16_t)angle_c;
+        //printf("angle:%f, aacx:%d, angle:%f\n\r", atan2((float)Car.gyroscope_data[aacz], (float)Car.gyroscope_data[aacx]) * 180.0 / PI, \
+                Car.gyroscope_data[aacx], Car.angle_x_with_mix); //反正切加速度计得到角度值
 
-        // printf("angle:%f, aacx:%d, angle:%f\n\r", atan2((float)aacz, (float)aacx) * 180.0 / PI, aacx, angle_c); //反正切加速度计得到角度值
+        vcan_sendware((int8_t *)(Car.uart_send_buffer), sizeof(Car.uart_send_buffer));
 
-        vcan_sendware((uint8_t *)icm_raw_data, sizeof(icm_raw_data));
-
-        delayms(10);
+        delayms(20);
     }
 }
 

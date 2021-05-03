@@ -518,6 +518,18 @@
         </Group>
         <Group>
           <GroupName>ddc</GroupName>
+          <Files>
+            <File>
+              <FileName>Data_Process.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LQlib\ddc\Data_Process.c</FilePath>
+            </File>
+            <File>
+              <FileName>Data_Process.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LQlib\ddc\Data_Process.h</FilePath>
+            </File>
+          </Files>
         </Group>
       </Groups>
     </Target>

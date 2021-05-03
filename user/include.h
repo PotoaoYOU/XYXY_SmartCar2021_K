@@ -8,6 +8,7 @@
 #include "intrins.h"
 
 #include "math.h"
+#include "Data_Process.h"
 
 typedef unsigned char u8;
 typedef unsigned char uint8;
@@ -48,5 +49,14 @@ typedef signed long int32_t;
 
 #define MAIN_Fosc 30000000UL
 #define PI 3.14159265
+
+typedef struct Car_Data_
+{
+    int16_t gyroscope_data[6]; //陀螺仪六轴原始数据
+    float aacx_with_mix;
+    int16_t uart_send_buffer[3];
+} Car_Data;
+
+extern Car_Data data Car;
 
 #endif
