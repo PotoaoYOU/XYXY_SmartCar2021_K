@@ -32,6 +32,16 @@ void timer0_int(void) interrupt 1
 {
     refreshGyroscopeRawData(Car.gyroscope_data);
     Car.aacx_with_mix = firstOrderComplementaryFilter(Car.gyroscope_data[aacx], Car.gyroscope_data[gyroy]);
+
+    Car.Servo.pwm = Car.Servo.mid_value +
+                    (int)(Car.Servo.pid.kp * (Car.aacx_with_mix + 200) + Car.Servo.pid.kd * Car.gyroscope_data[gyroy]);
+    if (Car.Servo.pwm > Car.Servo.left_value)
+        Car.Servo.pwm = Car.Servo.left_value;
+    if (Car.Servo.pwm < Car.Servo.right_value)
+        Car.Servo.pwm = Car.Servo.right_value;
+    printf("servo_pwm:%d\n\r", Car.Servo.pwm);
+    ServoCtrl(Car.Servo.pwm);
+
     LED_Ctrl(LED0, RVS); //平衡车占用
 }
 

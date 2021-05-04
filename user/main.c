@@ -18,18 +18,38 @@ QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ*/
 
 #include "include.h"
 
-Car_Data data Car;
+Car_Data_t data Car;
 
 void sysinit(void);
+
+void carDataInit(Car_Data_t *car)
+{
+    car->aacx_with_mix = 0;
+    car->Servo.frequency = 100;
+    car->Servo.left_value = 1760;
+    car->Servo.mid_value = 1400;
+    car->Servo.right_value = 1040;
+    car->Servo.pid.err = 0;
+    car->Servo.pid.kp = 0.13;
+    car->Servo.pid.ki = 0;
+    car->Servo.pid.kd = 0.06;
+    car->Servo.pwm = 0;
+}
 
 /******************** 主函数 **************************/
 void main(void)
 {
     sysinit();
+    carDataInit(&Car);
     UART1_config(1); //调试
     UART1_PutStr("uart1...\n\r");
     UART4_config(2);
     Timer0_init();
+    ServoInit(Car.Servo.frequency);
+    ServoCtrl(Car.Servo.mid_value); //1400中值 1760左值 1040右值
+    MotorInit(MOTOR_FREQUENCY);
+    MotorCtrl(0, 0);
+    GPIO_KEY_Init();
 
     if (ICM20689_Init())
         UART1_PutStr("ICM20689 INIT FAIL!!!\n\r");
@@ -38,6 +58,23 @@ void main(void)
 
     while (1)
     {
+        unsigned char k = 0xFF;
+        static char run = 0;
+        static char i = 0;
+
+        i++;
+        if (i >= 10)
+        {
+            i = 0;
+            k = KEY_Read(KEY0) & KEY_Read(KEY1) & KEY_Read(KEY2) & KEY_Read(KEY3);
+            if (k == 0)
+            {
+                run = ~run;
+                printf("run:%d\n\r", run);
+            }
+            run == 0 ? MotorCtrl(0, 0) : MotorCtrl(-250, 0);
+        }
+
         Car.uart_send_buffer[0] = Car.gyroscope_data[aacx];
         Car.uart_send_buffer[1] = Car.gyroscope_data[gyroy];
         Car.uart_send_buffer[2] = (int16_t)Car.aacx_with_mix;
@@ -47,7 +84,7 @@ void main(void)
 
         vcan_sendware((int8_t *)(Car.uart_send_buffer), sizeof(Car.uart_send_buffer));
 
-        delayms(20);
+        delayms(10);
     }
 }
 
@@ -55,7 +92,7 @@ void sysinit(void)
 {
     WTST = 0;
     P_SW2 |= 0x80;
-    IRCBAND = 1; //1：35M频段；0：24M频段
+    IRCBAND = 0; //1：35M频段；0：24M频段
                  //IRTRIM =0;
                  //LIRTRIM=0;
     CLKDIV = 0;  //24MHz主频，分频设置

@@ -9,6 +9,7 @@
 
 #include "math.h"
 #include "Data_Process.h"
+#include "balance.h"
 
 typedef unsigned char u8;
 typedef unsigned char uint8;
@@ -55,8 +56,9 @@ typedef struct Car_Data_
     int16_t gyroscope_data[6]; //陀螺仪六轴原始数据
     float aacx_with_mix;
     int16_t uart_send_buffer[3];
-} Car_Data;
+    Servo_Param_t Servo;
+} Car_Data_t;
 
-extern Car_Data data Car;
+extern Car_Data_t data Car;
 
 #endif

@@ -265,7 +265,7 @@
             <uFlt64>0</uFlt64>
             <Fuzzy>3</Fuzzy>
             <Optim>9</Optim>
-            <wLevel>2</wLevel>
+            <wLevel>1</wLevel>
             <SizSpd>0</SizSpd>
             <AcaOpt>0</AcaOpt>
             <VariousControls>
@@ -528,6 +528,16 @@
               <FileName>Data_Process.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\LQlib\ddc\Data_Process.h</FilePath>
+            </File>
+            <File>
+              <FileName>balance.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\LQlib\ddc\balance.c</FilePath>
+            </File>
+            <File>
+              <FileName>balance.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\LQlib\ddc\balance.h</FilePath>
             </File>
           </Files>
         </Group>

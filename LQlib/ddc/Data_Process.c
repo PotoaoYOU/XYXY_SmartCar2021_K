@@ -1,7 +1,7 @@
 #include "Data_Process.h"
 
-#define ACC_RATIO 2.4  //加速度计比例
-#define GYRO_RATIO 7.2 //陀螺仪比例
+#define ACC_RATIO 3.2  //加速度计比例 2.4
+#define GYRO_RATIO 7.2 //陀螺仪比例 7.2
 #define DT 0.005      //采样周期
 
 void refreshGyroscopeRawData(short *gyroscope_data)
